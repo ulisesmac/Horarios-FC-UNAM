@@ -1,0 +1,11 @@
+;; shadow-cljs configuration
+{:source-paths ["src/dev"
+                "src/main"
+                "src/test"]
+
+ :dependencies [[reagent "1.1.0"]]
+
+ :builds       {:app
+                {:target     :react-native
+                 :init-fn    horarios-fc.app/init
+                 :output-dir "app"}}}
