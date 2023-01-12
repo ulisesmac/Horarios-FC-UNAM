@@ -23,14 +23,13 @@ DerivedData
 ios/.xcode.env.local
 
 # Android/IntelliJ
-#
-build/
 .idea
 .gradle
 local.properties
 *.iml
 *.hprof
 .cxx/
+./android/app/build
 
 # node.js
 #
@@ -64,9 +63,8 @@ buck-out/
 /vendor/bundle/
 
 # Compiled ClojureScript
-app/
+/app/
 .shadow-cljs/
 
 # Editor
 .idea/
-
