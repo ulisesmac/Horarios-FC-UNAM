@@ -1,7 +1,9 @@
 (ns horarios-fc.app
   (:require
    ["react-native" :as rn]
-   [horarios-fc.parser.utils]
+   [horarios-fc.events]
+   [horarios-fc.subs]
+   [re-frame.core :as rf]
    [reagent.core :as r]
    [shadow.react-native :refer [render-root]]))
 
@@ -19,14 +21,18 @@
           (rn/StyleSheet.create)))
 
 (defn root []
-  [:> rn/View {:style (.-container styles)}
-   [:> rn/Text {:style (.-title styles)} "Hello!"]
-   ])
+  (let [loading? (rf/subscribe [:app-loading?])]
+    (fn []
+      [:> rn/View {:style (.-container styles)}
+       [:> rn/Text {:style (.-title styles)}
+        (if @loading?
+          "Loading app"
+          "Hi!")]])))
 
-(defn start
-  {:dev/after-load true}
-  []
+(defn ^:dev/after-load start []
+  (rf/clear-subscription-cache!)
   (render-root "HorariosFCUNAM" (r/as-element [root])))
 
 (defn init []
+  (rf/dispatch-sync [:initialize-db])
   (start))
