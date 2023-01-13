@@ -4,7 +4,7 @@
    [horarios-fc.networking :as n]
    [horarios-fc.parser.utils :refer [content-path parse-xml]]))
 
-(defn ->schedule-map [html-schedule]
+(defn- ->schedule-map [html-schedule]
   (reduce (fn [m {[title person days hours] :td}]
             (assoc m (:attr/text title)
                      {:person-name         (:attr/text (:a person))
@@ -14,22 +14,23 @@
           {}
           html-schedule))
 
-(defn get-classes-details [raw-response]
+(defn- get-classes-details [raw-response]
   (let [groups (->> (get-in raw-response content-path) :div (drop 2))]
-    (reduce (fn [m group]
-              (let [group-data   (as-> (:div group) $
-                                   (if (vector? $)
-                                     [(first $) (second $)]
-                                     [$ nil]))
-                    group-id     (->> group-data first :strong (re-find #"\d+"))
-                    num-places   (->> group-data first :attr/text (re-find #"\d+") int)
-                    presentation (some->> group-data second :ul :li :a :attr/href)
-                    schedule     (-> group :table :tr ->schedule-map)]
-                (assoc m group-id {:places                   num-places
-                                   :schedule                 schedule
-                                   :presentation-resorce-url presentation})))
-            {}
-            groups)))
+    (vec
+     (reduce (fn [m group]
+               (let [group-data   (as-> (:div group) $
+                                    (if (vector? $)
+                                      [(first $) (second $)]
+                                      [$ nil]))
+                     group-id     (->> group-data first :strong (re-find #"\d+"))
+                     num-places   (->> group-data first :attr/text (re-find #"\d+") int)
+                     presentation (some->> group-data second :ul :li :a :attr/href)
+                     schedule     (-> group :table :tr ->schedule-map)]
+                 (assoc m group-id {:places                   num-places
+                                    :schedule                 schedule
+                                    :presentation-resorce-url presentation})))
+             {}
+             groups))))
 
 (defn- group-html-classes [html-response]
   (-> html-response

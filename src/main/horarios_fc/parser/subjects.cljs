@@ -21,11 +21,11 @@
             {}
             coll-subjects)))
 
-(defn get-subjects-by-groups [raw-response]
+(defn- get-subjects-by-groups [raw-response]
   (let [content           (get-in raw-response content-path)
         groups            (:h2 content)
         subjects-by-group (map ->subjects-map (next (:div content)))]
-    (map #(vector %1 %2) groups subjects-by-group)))
+    (mapv #(vector %1 %2) groups subjects-by-group)))
 
 (defn- group-html-subjects [html-response]
   (-> html-response

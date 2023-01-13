@@ -4,7 +4,7 @@
    [horarios-fc.networking :as n]
    [horarios-fc.parser.utils :refer [content-path parse-xml]]))
 
-(def base-url (str n/domain "/docencia/horarios/indice/"))
+(def ^:private base-url (str n/domain "/docencia/horarios/indice/"))
 
 (defn- get-plan-name [raw-plan-name]
   (string/replace (re-find #"\(.+\)" raw-plan-name)
@@ -19,12 +19,12 @@
             {}
             plan-coll)))
 
-(defn parse-bachelors-w-plans [raw-response]
+(defn- parse-bachelors-w-plans [raw-response]
   (let [content   (get-in raw-response content-path)
         bachelors (:h2 content)
         plans     (map #(->plans-map (:a %))
                        (next (:p content)))]
-    (map #(vector %1 %2) bachelors plans)))
+    (mapv #(vector %1 %2) bachelors plans)))
 
 (defn bachelors-w-plans!
   "2023-1, 2023-2, ..."
