@@ -1,30 +1,19 @@
 (ns horarios-fc.app
   (:require
-   ["react-native" :as rn]
+   [react-native :as rn]
    [horarios-fc.events]
    [horarios-fc.subs]
    [re-frame.core :as rf]
    [reagent.core :as r]
    [shadow.react-native :refer [render-root]]))
 
-(def styles
-  ^js (-> {:container
-           {:flex            1
-            :backgroundColor "#fff"
-            :alignItems      "center"
-            :justifyContent  "center"}
-           :title
-           {:fontWeight "bold"
-            :fontSize   24
-            :color      "blue"}}
-          (clj->js)
-          (rn/StyleSheet.create)))
-
 (defn root []
   (let [loading? (rf/subscribe [:app-loading?])]
     (fn []
-      [:> rn/View {:style (.-container styles)}
-       [:> rn/Text {:style (.-title styles)}
+      [rn/view {:style {:flex            1
+                        :justify-content :center
+                        :align-items     :center}}
+       [rn/text
         (if @loading?
           "Loading app"
           "Hi!")]])))
