@@ -1,8 +1,7 @@
 (ns horarios-fc.app
   (:require
    ["react-native" :as rn]
-   [horarios-fc.networking :refer [http-request!]]
-   [horarios-fc.parser :refer [parse-xml]]
+   [horarios-fc.parser.utils]
    [reagent.core :as r]
    [shadow.react-native :refer [render-root]]))
 
