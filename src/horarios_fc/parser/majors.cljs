@@ -1,4 +1,4 @@
-(ns horarios-fc.parser.bachelors
+(ns horarios-fc.parser.majors
   (:require
    [clojure.string :as string]
    [horarios-fc.networking :as n]
@@ -19,21 +19,21 @@
             {}
             plan-coll)))
 
-(defn- parse-bachelors-w-plans [raw-response]
+(defn- parse-majors-w-plans [raw-response]
   (let [content   (get-in raw-response content-path)
-        bachelors (:h2 content)
+        majors (:h2 content)
         plans     (map #(->plans-map (:a %))
                        (next (:p content)))]
-    (mapv #(vector %1 %2) bachelors plans)))
+    (mapv #(vector %1 %2) majors plans)))
 
-(defn bachelors-w-plans!
+(defn majors-w-plans!
   "2023-1, 2023-2, ..."
   [{:keys [semester on-success on-failure]}]
   (n/http-request! {:method     :GET
                     :url        (str base-url (string/replace semester #"-" ""))
                     :on-success #(-> %
                                      (parse-xml)
-                                     (parse-bachelors-w-plans)
+                                     (parse-majors-w-plans)
                                      (on-success))
                     :on-failure (fn [error]
                                   (js/console.error error)

@@ -13,14 +13,14 @@
 (rf/reg-event-fx
  :initialize-db
  (fn [_ _]
-   {:db               {:app-loading? true}
-    ::p/get-bachelors {:semester   (shown-semester)
-                       :on-success #(rf/dispatch [::store-bachelors %])
-                       :on-failure (fn [r]
-                                     (prn r))}}))
+   {:db            {:app-loading? true}
+    ::p/get-majors {:semester   (shown-semester)
+                    :on-success #(rf/dispatch [::store-majors %])
+                    :on-failure (fn [r]
+                                  (prn r))}}))
 
 (rf/reg-event-fx
- ::store-bachelors
+ ::store-majors
  (fn [{db :db} [_ response]]
    {:db (assoc db :schedule response)
     :fx [[:dispatch [::set-app-loaded]]]}))

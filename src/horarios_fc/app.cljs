@@ -5,18 +5,18 @@
    [horarios-fc.subs]
    [re-frame.core :as rf]
    [reagent.core :as r]
-   [shadow.react-native :refer [render-root]]))
+   [shadow.react-native :refer [render-root]]
+   ;; TMP
+   [horarios-fc.screens.pick-major.views :as pick-major]
+   ))
 
 (defn root []
   (let [loading? (rf/subscribe [:app-loading?])]
     (fn []
-      [rn/view {:style {:flex            1
-                        :justify-content :center
-                        :align-items     :center}}
-       [rn/text
-        (if @loading?
-          "Loading app"
-          "Hi!")]])))
+      (if @loading?
+        [rn/text {:style {:color "#101010"}}
+         "Loading app"]
+        [pick-major/screen]))))
 
 (defn ^:dev/after-load start []
   (rf/clear-subscription-cache!)
