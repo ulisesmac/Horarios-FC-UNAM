@@ -2,6 +2,7 @@
   (:require
    [re-frame.core :as rf]
    [react-native :as rn]
+   [horarios-fc.navigation.utils :as nav-utils]
    [reagent.core :as r]))
 
 (def major-icon
@@ -62,6 +63,23 @@
         [rn/text {:style {:color "#101010"}}
          "Selecciona la carrera a consultar"]
 
+
+        [rn/touchable-highlight {:style          {:border-radius 12}
+                                 :active-opacity 0.7
+                                 :underlay-color "#DDDDDD"
+                                 :on-press       (fn []
+                                                   (println "pressed!")
+                                                   (nav-utils/navigate {:route-name :schedule-plan}))}
+         [rn/view {:style {:background-color "#F2F2F2"
+                           :border-radius    12
+                           :border-width     0.6
+                           :border-color     "#7e7e7e"
+                           :height           170
+                           :width            170
+                           :padding          4}}
+
+          [rn/text "press me to navigate"]]]
+
         [rn/scroll-view
          [rn/view {:style {:flex               1
                            :flex-direction     :row
@@ -73,4 +91,5 @@
           (map #(with-meta [major-card %] {:key (str %)})
                @majors)]]]])))
 
-(def screen (r/reactify-component screen*))
+(defn screen []
+  (r/as-element [screen*]))

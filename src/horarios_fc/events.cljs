@@ -29,4 +29,3 @@
  ::set-app-loaded
  (fn [db _]
    (assoc db :app-loading? false)))
-

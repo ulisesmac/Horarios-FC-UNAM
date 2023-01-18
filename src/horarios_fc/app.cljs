@@ -1,7 +1,7 @@
 (ns horarios-fc.app
   (:require
    [horarios-fc.events]
-   [horarios-fc.navigation :as nav]
+   [horarios-fc.navigation.navigation :as nav]
    [horarios-fc.subs]
    [re-frame.core :as rf]
    [react-native :as rn]
