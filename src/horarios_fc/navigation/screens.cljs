@@ -1,8 +1,8 @@
 (ns horarios-fc.navigation.screens
   (:require
    [horarios-fc.navigation.utils :as nav-utils]
-   [horarios-fc.screens.pick-plan :as pick-plan]
    [horarios-fc.screens.pick-major.views :as pick-major]
+   [horarios-fc.screens.pick-plan.views :as pick-plan]
    [react-navigation.native-stack :refer [create-native-stack-navigator]]
    [reagent.core :as r]))
 

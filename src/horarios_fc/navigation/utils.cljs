@@ -1,7 +1,7 @@
 (ns horarios-fc.navigation.utils
   (:require
-   [react-navigation.native :refer [create-navigation-container-ref]]
-   [re-frame.core :as rf]))
+   [re-frame.core :as rf]
+   [react-navigation.native :refer [create-navigation-container-ref]]))
 
 (defn create-stack-navigator [{:keys [native-stack-navigator screens]}]
   (let [{stack-screen    :stack/screen
@@ -18,11 +18,15 @@
   (when ^js/Boolean (.isReady ^js/Object navigation-ref)
     (.navigate navigation-ref route-name params)))
 
-(rf/reg-fx ::navigate! navigate)
+(rf/reg-fx :navigate navigate)
 
 (rf/reg-event-fx
- :navigate
- (fn [{db :db} [_ route-name params]]
-   {:db         (assoc db :current-route route-name)
-    ::navigate! {:route-name route-name
-                 :params     params}}))
+ :store-navigation
+ (fn [{db :db} [_ navigation-state]]
+   ;; TODO: persist it in local storage
+   {:db (assoc db :navigation-state navigation-state)}))
+
+(rf/reg-sub
+ :navigation-state
+ (fn [db]
+   (:navigation-state db)))

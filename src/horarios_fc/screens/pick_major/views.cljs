@@ -1,8 +1,8 @@
 (ns horarios-fc.screens.pick-major.views
   (:require
+   [horarios-fc.navigation.utils :as nav-utils]
    [re-frame.core :as rf]
    [react-native :as rn]
-   [horarios-fc.navigation.utils :as nav-utils]
    [reagent.core :as r]))
 
 (def major-icon

@@ -1,8 +1,9 @@
 (ns ^:dev/always horarios-fc.navigation.navigation
   (:require
    [horarios-fc.navigation.screens :as screens]
-   [react-native :as rn]
    [horarios-fc.navigation.utils :as nav-utils]
+   [re-frame.core :as rf]
+   [react-native :as rn]
    [react-navigation.bottom-tabs :refer [create-bottom-tab-navigator]]
    [react-navigation.native :refer [create-navigation-container-ref navigation-container]]
    [reagent.core :as r]))
@@ -14,7 +15,9 @@
 
 (defn  app-navigator []
   (let [{tab-screen :tab/screen, tab-navigator :tab/navigator} bottom-tabs]
-    [navigation-container {:ref nav-utils/navigation-ref}
+    [navigation-container {:ref             nav-utils/navigation-ref
+                           :initial-state   @(rf/subscribe [:navigation-state])
+                           :on-state-change #(rf/dispatch-sync [:store-navigation %])}
      [tab-navigator {:screen-options {:header-shown              false
                                       :tab-bar-active-tint-color "green"
                                       :tab-bar-icon              tmp-tab-icon}}
