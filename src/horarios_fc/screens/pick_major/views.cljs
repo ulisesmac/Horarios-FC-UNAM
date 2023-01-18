@@ -1,7 +1,8 @@
 (ns horarios-fc.screens.pick-major.views
   (:require
    [re-frame.core :as rf]
-   [react-native :as rn]))
+   [react-native :as rn]
+   [reagent.core :as r]))
 
 (def major-icon
   {"Actuaría"                             ["\uD83D\uDCB9" "📊"]
@@ -52,7 +53,7 @@
                        :line-height 18}}
       major]]]])
 
-(defn screen []
+(defn screen* []
   (let [majors (rf/subscribe [:majors-list])]
     (fn []
       [rn/view {:style {:flex             1
@@ -71,3 +72,5 @@
                            :padding-vertical   12}}
           (map #(with-meta [major-card %] {:key (str %)})
                @majors)]]]])))
+
+(def screen (r/reactify-component screen*))

@@ -1,27 +1,26 @@
 (ns horarios-fc.app
   (:require
-   [react-native :as rn]
    [horarios-fc.events]
+   [horarios-fc.navigation :as nav]
    [horarios-fc.subs]
    [re-frame.core :as rf]
+   [react-native :as rn]
    [reagent.core :as r]
-   [shadow.react-native :refer [render-root]]
-   ;; TMP
-   [horarios-fc.screens.pick-major.views :as pick-major]
-   ))
+   [shadow.react-native :refer [render-root]]))
 
 (defn root []
   (let [loading? (rf/subscribe [:app-loading?])]
     (fn []
-      (if @loading?
+      (if false ;@loading?
         [rn/text {:style {:color "#101010"}}
          "Loading app"]
-        [pick-major/screen]))))
+        [:f> nav/app-navigator]))))
 
 (defn ^:dev/after-load start []
   (rf/clear-subscription-cache!)
   (render-root "HorariosFCUNAM" (r/as-element [root])))
 
 (defn init []
+  (rn/ignore-logs ["Got a component with the name 'cmp'"])
   (rf/dispatch-sync [:initialize-db])
   (start))

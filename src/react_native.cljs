@@ -11,4 +11,9 @@
 
 (def touchable-highlight (r/adapt-react-class rn/TouchableHighlight))
 
-(def style-sheet-create rn/StyleSheet.create)
+(def style-sheet rn/StyleSheet.create)
+
+
+;; Logs
+(defn ignore-logs [v-strs]
+  (.ignoreLogs rn/LogBox (clj->js v-strs)))

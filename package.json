@@ -10,7 +10,9 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-navigation/bottom-tabs": "^6.5.3",
     "@react-navigation/native": "^6.1.2",
+    "@react-navigation/native-stack": "^6.9.8",
     "create-react-class": "^15.7.0",
     "fast-xml-parser": "^4.0.13",
     "react": "18.2.0",
