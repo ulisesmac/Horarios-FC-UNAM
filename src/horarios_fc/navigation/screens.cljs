@@ -15,7 +15,7 @@
                              {:component pick-plan/screen
                               :props     {:name :schedule-plan}}]}])
 
-(defn ^:dev/after-load tab-screens []
+(defn tab-screens []
   [{:props     {:name      :schedule-tab
                 :show-name "Horarios"}
     :component #(r/as-element [schedules-stack-screen])}

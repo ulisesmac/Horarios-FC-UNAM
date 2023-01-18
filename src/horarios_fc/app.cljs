@@ -21,6 +21,7 @@
   (render-root "HorariosFCUNAM" (r/as-element [root])))
 
 (defn init []
-  (rn/ignore-logs ["Got a component with the name 'cmp'"])
+  (rn/ignore-logs ["Got a component with the name 'cmp'"
+                   "re-frame: overwriting"])
   (rf/dispatch-sync [:initialize-db])
   (start))

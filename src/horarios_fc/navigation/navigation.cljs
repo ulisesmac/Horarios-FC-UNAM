@@ -1,4 +1,4 @@
-(ns horarios-fc.navigation.navigation
+(ns ^:dev/always horarios-fc.navigation.navigation
   (:require
    [horarios-fc.navigation.screens :as screens]
    [react-native :as rn]
@@ -12,7 +12,7 @@
   (r/as-element [rn/view {:style {:background-color color}}
                  [rn/text "i"]]))
 
-(defn ^:dev/after-load app-navigator []
+(defn  app-navigator []
   (let [{tab-screen :tab/screen, tab-navigator :tab/navigator} bottom-tabs]
     [navigation-container {:ref nav-utils/navigation-ref}
      [tab-navigator {:screen-options {:header-shown              false
