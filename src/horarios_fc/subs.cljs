@@ -8,15 +8,11 @@
    (:app-loading? db)))
 
 (rf/reg-sub
- ::schedule
- (fn [db _]
+ :schedule
+ (fn [db]
    (:schedule db)))
 
 (rf/reg-sub
- :majors-list
- :<- [::schedule]
- (fn [schedule]
-   (mapv (fn [[major url]]
-           {:major major
-            :url      url})
-         schedule)))
+ :schedule-shown-content
+ (fn [db]
+   (:schedule-shown-content db)))

@@ -1,6 +1,7 @@
 (ns horarios-fc.screens.pick-major.views
   (:require
-   [horarios-fc.navigation.utils :as nav-utils]
+   [horarios-fc.screens.pick-major.events :as events]
+   [horarios-fc.screens.pick-major.subs :as subs]
    [re-frame.core :as rf]
    [react-native :as rn]
    [reagent.core :as r]))
@@ -16,11 +17,11 @@
    "Matemáticas Aplicadas"                ["❔" "🧮"]
    "Matemáticas"                          ["\uD83D\uDD22" "➕️"]})
 
-(defn major-card [{:keys [major url]}]
+(defn major-card [{:keys [major]}]
   [rn/touchable-highlight {:style          {:border-radius 12}
                            :active-opacity 0.7
                            :underlay-color "#DDDDDD"
-                           :on-press       #(prn url)}
+                           :on-press       #(rf/dispatch [::events/choose-major major])}
    [rn/view {:style {:background-color "#F2F2F2"
                      :border-radius    12
                      :border-width     0.6
@@ -55,30 +56,13 @@
       major]]]])
 
 (defn screen* []
-  (let [majors (rf/subscribe [:majors-list])]
+  (let [majors (rf/subscribe [::subs/majors-list])]
     (fn []
       [rn/view {:style {:flex             1
                         :background-color "#FAFAFA"}}
        [rn/view {:style {:flex 1, :row-gap 12}}
         [rn/text {:style {:color "#101010"}}
          "Selecciona la carrera a consultar"]
-
-
-        [rn/touchable-highlight {:style          {:border-radius 12}
-                                 :active-opacity 0.7
-                                 :underlay-color "#DDDDDD"
-                                 :on-press       (fn []
-                                                   (println "pressed!")
-                                                   (nav-utils/navigate {:route-name :schedule-plan}))}
-         [rn/view {:style {:background-color "#F2F2F2"
-                           :border-radius    12
-                           :border-width     0.6
-                           :border-color     "#7e7e7e"
-                           :height           170
-                           :width            170
-                           :padding          4}}
-
-          [rn/text "press me to navigate"]]]
 
         [rn/scroll-view
          [rn/view {:style {:flex               1
