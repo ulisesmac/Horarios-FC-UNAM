@@ -1,34 +1,60 @@
 (ns horarios-fc.screens.pick-plan.views
   (:require
+   [horarios-fc.colors :refer [theme]]
+   [horarios-fc.screens.pick-major.subs :as pick-major.subs]
    [horarios-fc.screens.pick-plan.subs :as subs]
    [re-frame.core :as rf]
    [react-native :as rn]
    [reagent.core :as r]))
 
 (defn plan-button [{:keys [text url]}]
-  [rn/touchable-highlight {:on-press (fn []
+  [rn/touchable-highlight {:style    {:border-radius 20}
+                           :on-press (fn []
                                        (println url))}
-   [rn/view {:style {:background-color   :green
+   [rn/view {:style {:border-color       (theme :primary-600)
+
+                     :border-width       1
+                     :background-color   (theme :primary-100)
+                     :border-radius      20
                      :justify-content    :center
                      :align-items        :center
                      :padding-horizontal 24
                      :padding-vertical   24}}
-    [rn/text text]]])
+    [rn/text {:style {:color       (theme :primary-600)
+                      :font-weight "500"
+                      :font-size   16}}
+     text]]])
 
 (defn screen* []
-  (let [plans-list (rf/subscribe [::subs/plans-list])]
+  (let [plans-list     (rf/subscribe [::subs/plans-list])
+        major-selected (rf/subscribe [::pick-major.subs/major-selected])]
     (fn []
       [rn/view {:style {:flex               1
                         :padding-horizontal 16
-                        :padding-vertical   12}}
-       [rn/view {:style {:flex               1
-                         :row-gap            18
-                         :padding-horizontal 12
-                         :justify-content    :center}}
-        (map (fn [{:keys [plan url]}]
-               ^{:key plan} [plan-button {:text plan
-                                          :url  url}])
-             @plans-list)]])))
+                        :padding-top        12
+                        :justify-content    :center
+                        :background-color   (theme :color-basic-100)}}
+
+       [rn/view {:style {:flex                1
+                         :justify-content     :center
+                         :border-bottom-width 0.6
+                         :border-bottom-color (theme :color-basic-200)}}
+        [rn/text {:style {:text-align  :center
+                          :font-size   26
+                          :font-weight "500"
+                          :color       (theme :secondary-500)}}
+         (str @major-selected)]]
+
+       [rn/view {:style {:flex 3}}
+        [rn/scroll-view {:content-container-style {:flex               1
+                                                   :row-gap            18
+                                                   :padding-vertical   12
+                                                   :padding-horizontal 8
+                                                   :justify-content    :center}}
+         (map (fn [{:keys [plan url]}]
+                ^{:key plan} [plan-button {:text plan
+                                           :url  url}])
+              @plans-list)]]])))
 
 (defn screen []
   (r/as-element [screen*]))

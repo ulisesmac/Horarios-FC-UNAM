@@ -1,5 +1,6 @@
 (ns horarios-fc.screens.pick-plan.subs
   (:require
+   [clojure.string :as string]
    [horarios-fc.screens.pick-major.subs :as pick-major-subs]
    [re-frame.core :as rf]))
 
@@ -13,6 +14,6 @@
                                plans))
                            majors-list)]
      (mapv (fn [[plan url]]
-             {:plan plan
+             {:plan (string/capitalize plan)
               :url  url})
            plans-found))))
