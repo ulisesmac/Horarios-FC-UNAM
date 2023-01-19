@@ -3,16 +3,16 @@
    [horarios-fc.colors :refer [theme]]
    [horarios-fc.screens.pick-major.subs :as pick-major.subs]
    [horarios-fc.screens.pick-plan.subs :as subs]
+   [clojure.string :as string]
    [re-frame.core :as rf]
    [react-native :as rn]
    [reagent.core :as r]))
 
-(defn plan-button [{:keys [text url]}]
+(defn plan-button [{:keys [plan url] :as m}]
   [rn/touchable-highlight {:style    {:border-radius 20}
                            :on-press (fn []
                                        (println url))}
    [rn/view {:style {:border-color       (theme :primary-600)
-
                      :border-width       1
                      :background-color   (theme :primary-100)
                      :border-radius      20
@@ -23,7 +23,7 @@
     [rn/text {:style {:color       (theme :primary-600)
                       :font-weight "500"
                       :font-size   16}}
-     text]]])
+     (string/capitalize plan)]]])
 
 (defn screen* []
   (let [plans-list     (rf/subscribe [::subs/plans-list])
@@ -51,9 +51,8 @@
                                                    :padding-vertical   12
                                                    :padding-horizontal 8
                                                    :justify-content    :center}}
-         (map (fn [{:keys [plan url]}]
-                ^{:key plan} [plan-button {:text plan
-                                           :url  url}])
+         (map (fn [{:keys [plan] :as props}]
+                ^{:key plan} [plan-button props])
               @plans-list)]]])))
 
 (defn screen []

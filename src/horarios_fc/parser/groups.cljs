@@ -38,7 +38,7 @@
       (string/replace #"<div style=\"padding-top: 10px" "</div><div><div style=\"padding-top: 10px")
       (string/replace #"</table>\s*</div>\s*<p>" "</table></div></div><p>")))
 
-(defn classes-by-subject!
+(defn groups-by-subject!
   [{:keys [group-resource-url on-success on-failure]}]
   (n/http-request! {:method     :GET
                     :url        (str n/domain group-resource-url)
