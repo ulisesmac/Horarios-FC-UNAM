@@ -30,7 +30,6 @@
 (rf/reg-event-fx
  ::get-subjects
  (fn [_ [_ {:keys [plan-url on-success-evt]}]]
-   (prn (ps/create-url plan-url))
    {:http-request {:method     :GET
                    :url        (ps/create-url plan-url)
                    :on-success #(rf/dispatch-sync
@@ -40,7 +39,6 @@
 (rf/reg-event-fx
  ::store-subjects
  (fn [{db :db} [_ on-success-evt response]]
-   (let [semester (-> db :schedule-shown-content :semester)
-         plan     (-> db :schedule-shown-content :plan)]
-     {:db (assoc-in db [:schedule semester :data plan :data] response)
+   (let [{:keys [semester major plan]} (-> db :schedule-shown-content)]
+     {:db (assoc-in db [:schedule semester :data major :data plan :data] response)
       :fx [[:dispatch on-success-evt]]})))
