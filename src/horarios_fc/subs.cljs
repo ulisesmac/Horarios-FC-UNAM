@@ -24,6 +24,12 @@
    (:semester schedule-shown-content)))
 
 (rf/reg-sub
+ :plan-selected
+ :<- [:schedule-shown-content]
+ (fn [schedule-shown-content]
+    (:plan schedule-shown-content)))
+
+(rf/reg-sub
  :requesting-data?
  (fn [db]
    (:requesting-data? db)))

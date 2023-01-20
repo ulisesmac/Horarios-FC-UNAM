@@ -1,7 +1,7 @@
 (ns horarios-fc.screens.pick-plan.views
   (:require
    [clojure.string :as string]
-   [horarios-fc.colors :refer [theme]]
+   [horarios-fc.colors :refer [alpha theme]]
    [horarios-fc.screens.pick-major.subs :as pick-major.subs]
    [horarios-fc.screens.pick-plan.events :as events]
    [horarios-fc.screens.pick-plan.subs :as subs]
@@ -10,12 +10,15 @@
    [reagent.core :as r]))
 
 (defn plan-button [{:keys [plan url]}]
-  [rn/touchable-highlight {:style    {:border-radius 20}
-                           :on-press #(rf/dispatch
-                                       [::events/get-subjects-by-plan plan url])}
+  ;; TODO: fix this button
+  [rn/touchable-highlight {:style          {:border-radius 20}
+                           :active-opacity 0.9
+                           :underlay-color (theme :primary-100)
+                           :on-press       #(rf/dispatch
+                                             [::events/get-subjects-by-plan plan url])}
    [rn/view {:style {:border-color       (theme :primary-600)
                      :border-width       1
-                     :background-color   (theme :primary-100)
+                     :background-color   (alpha (theme :primary-100) 80)
                      :border-radius      20
                      :justify-content    :center
                      :align-items        :center
@@ -34,12 +37,12 @@
                         :padding-horizontal 16
                         :padding-top        12
                         :justify-content    :center
-                        :background-color   (theme :color-basic-100)}}
+                        :background-color   (theme :basic-100)}}
 
        [rn/view {:style {:flex                1
                          :justify-content     :center
                          :border-bottom-width 0.6
-                         :border-bottom-color (theme :color-basic-200)}}
+                         :border-bottom-color (theme :basic-300)}}
         [rn/text {:style {:text-align  :center
                           :font-size   26
                           :font-weight "500"

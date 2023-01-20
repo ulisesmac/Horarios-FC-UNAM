@@ -65,8 +65,7 @@
         [rn/text {:style {:color "#101010"}}
          "Selecciona la carrera a consultar"]
         [rn/scroll-view
-         [rn/view {:style {:flex               1
-                           :flex-direction     :row
+         [rn/view {:style {:flex-direction     :row
                            :justify-content    :center
                            :flex-wrap          :wrap
                            :gap                16

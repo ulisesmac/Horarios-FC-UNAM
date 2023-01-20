@@ -10,6 +10,7 @@
 (def image (r/adapt-react-class rn/Image))
 
 (def touchable-highlight (r/adapt-react-class rn/TouchableHighlight))
+(def touchable-opacity (r/adapt-react-class rn/TouchableOpacity))
 
 (def style-sheet rn/StyleSheet.create)
 
