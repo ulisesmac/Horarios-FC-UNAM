@@ -3,15 +3,16 @@
    [clojure.string :as string]
    [horarios-fc.colors :refer [theme]]
    [horarios-fc.screens.pick-major.subs :as pick-major.subs]
+   [horarios-fc.screens.pick-plan.events :as events]
    [horarios-fc.screens.pick-plan.subs :as subs]
    [re-frame.core :as rf]
    [react-native :as rn]
    [reagent.core :as r]))
 
-(defn plan-button [{:keys [plan url] :as m}]
+(defn plan-button [{:keys [plan url]}]
   [rn/touchable-highlight {:style    {:border-radius 20}
-                           :on-press (fn []
-                                       (println url))}
+                           :on-press #(rf/dispatch
+                                       [::events/get-subjects-by-plan plan url])}
    [rn/view {:style {:border-color       (theme :primary-600)
                      :border-width       1
                      :background-color   (theme :primary-100)

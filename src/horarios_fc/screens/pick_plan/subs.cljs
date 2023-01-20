@@ -18,6 +18,6 @@
    (as-> majors $
      (get-in $ [major-selected :data])
      (sort-by (fn [_plan {:keys [idx]}] idx) $)
-     (map (fn [[plan url]]
-            {:plan plan, :url url})
+     (map (fn [[plan data-map]]
+            {:plan plan, :url (:url data-map)})
           $))))

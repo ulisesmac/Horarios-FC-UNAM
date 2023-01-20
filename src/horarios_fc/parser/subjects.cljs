@@ -16,16 +16,13 @@
   (let [subjects      (:div html-subjects)
         coll-subjects (cond-> subjects
                         (map? subjects) (vector))]
-    (reduce (fn [m {{:attr/keys [text href] :as _subjects} :a}]
-              (assoc m (get-subject-name text) href))
-            {}
-            coll-subjects)))
-
-(defn- get-subjects-by-groups [raw-response]
-  (let [content           (get-in raw-response content-path)
-        groups            (:h2 content)
-        subjects-by-group (map ->subjects-map (next (:div content)))]
-    (mapv #(vector %1 %2) groups subjects-by-group)))
+    (->> coll-subjects
+         (map-indexed #(vector %1 %2))
+         (reduce (fn [m [idx {{:attr/keys [text href] :as _subjects} :a}]]
+                   (assoc m (get-subject-name text) {:url  href
+                                                     :idx  idx
+                                                     :data nil}))
+                 {}))))
 
 (defn- group-html-subjects [html-response]
   (-> html-response
@@ -33,15 +30,18 @@
       (string/replace #"</div>\s*<h2>" "</div></div><h2>")
       (string/replace #"</div>\s*</div>\s*<p>" "</div></div></div><p>")))
 
-(defn subjects-by-plan!
-  [{:keys [plan-resource-url on-success on-failure]}]
-  (n/http-request! {:url        (str n/domain plan-resource-url)
-                    :method     :GET
-                    :on-success #(-> %
-                                     (group-html-subjects)
-                                     (parse-xml)
-                                     (get-subjects-by-groups)
-                                     (on-success))
-                    :on-failure (fn [error]
-                                  (js/console.error error)
-                                  (on-failure error))}))
+(defn- parse-subjects [raw-response]
+  (let [fixed-html           (group-html-subjects raw-response)
+        parsed-response      (parse-xml fixed-html)
+        content              (get-in parsed-response content-path)
+        num-semesters        (:h2 content)
+        subjects-by-semester (map ->subjects-map (next (:div content)))]
+
+    (reduce (fn [acc [idx num-semester subjects]]
+              (assoc acc num-semester {:idx  idx
+                                       :data subjects}))
+            {}
+            (partition 3 (interleave (range) num-semesters subjects-by-semester)))))
+
+(defn create-url [plan-url]
+  (str n/domain plan-url))

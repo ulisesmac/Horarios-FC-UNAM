@@ -23,3 +23,8 @@
    (-> db
        (assoc :app-loading? false)
        (assoc-in [:schedule-shown-content :semester] current-semester))))
+
+(rf/reg-event-db
+ :stop-requesting-data
+ (fn [db]
+   (assoc db :requesting-data? false)))

@@ -22,3 +22,8 @@
  :<- [:schedule-shown-content]
  (fn [schedule-shown-content]
    (:semester schedule-shown-content)))
+
+(rf/reg-sub
+ :requesting-data?
+ (fn [db]
+   (:requesting-data? db)))
