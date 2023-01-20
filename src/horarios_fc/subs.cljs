@@ -16,3 +16,9 @@
  :schedule-shown-content
  (fn [db]
    (:schedule-shown-content db)))
+
+(rf/reg-sub
+ :semester-selected
+ :<- [:schedule-shown-content]
+ (fn [schedule-shown-content]
+   (:semester schedule-shown-content)))

@@ -56,7 +56,7 @@
                        :line-height 18}}
       major]]]])
 
-(defn screen* [] ;; TODO: generalize hardcoded semester
+(defn screen* [] ;; TODO: set semester as a value in re-frame db
   (let [majors (rf/subscribe [::subs/majors-list-by-semester "2023-2"])]
     (fn []
       [rn/view {:style {:flex             1

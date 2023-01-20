@@ -5,5 +5,5 @@
 (rf/reg-event-fx
  ::choose-major
  (fn [{db :db} [_ selected-major]]
-   {:db       (assoc db :schedule-shown-content {:major selected-major})
+   {:db       (assoc-in db [:schedule-shown-content :major] selected-major)
     :navigate {:route-name :schedule-plan}}))

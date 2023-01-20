@@ -1,9 +1,9 @@
 (ns horarios-fc.screens.pick-plan.views
   (:require
+   [clojure.string :as string]
    [horarios-fc.colors :refer [theme]]
    [horarios-fc.screens.pick-major.subs :as pick-major.subs]
    [horarios-fc.screens.pick-plan.subs :as subs]
-   [clojure.string :as string]
    [re-frame.core :as rf]
    [react-native :as rn]
    [reagent.core :as r]))
@@ -23,7 +23,7 @@
     [rn/text {:style {:color       (theme :primary-600)
                       :font-weight "500"
                       :font-size   16}}
-     (string/capitalize plan)]]])
+     (some-> plan (string/capitalize))]]])
 
 (defn screen* []
   (let [plans-list     (rf/subscribe [::subs/plans-list])

@@ -20,4 +20,6 @@
 (rf/reg-event-db
  ::set-app-loaded
  (fn [db _]
-   (assoc db :app-loading? false)))
+   (-> db
+       (assoc :app-loading? false)
+       (assoc-in [:schedule-shown-content :semester] current-semester))))
