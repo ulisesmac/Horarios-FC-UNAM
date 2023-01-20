@@ -1,4 +1,5 @@
-(ns horarios-fc.networking)
+(ns horarios-fc.networking
+  (:require [re-frame.core :as rf]))
 
 (def domain "https://archive.fciencias.unam.mx")
 
@@ -12,3 +13,4 @@
       (.catch (fn [error]
                 (on-failure error)))))
 
+(rf/reg-fx :http-request http-request!)

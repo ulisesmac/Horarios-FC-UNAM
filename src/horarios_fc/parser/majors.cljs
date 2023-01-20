@@ -14,27 +14,26 @@
 (defn- ->plans-map [html-plans]
   (let [plan-coll (cond-> html-plans
                     (map? html-plans) (vector))]
-    (reduce (fn [m {:attr/keys [text href] :as _html-plan}]
-              (assoc m (get-plan-name text) href))
-            {}
-            plan-coll)))
+    (->> plan-coll
+         (map-indexed #(vector %1 %2))
+         (reduce (fn [m [idx {:attr/keys [text href] :as _html-plan}]]
+                   (assoc m (get-plan-name text) {:url  href
+                                                  :data nil
+                                                  :idx  idx}))
+                 {}))))
 
 (defn- parse-majors-w-plans [raw-response]
-  (let [content   (get-in raw-response content-path)
-        majors (:h2 content)
-        plans     (map #(->plans-map (:a %))
-                       (next (:p content)))]
-    (mapv #(vector %1 %2) majors plans)))
+  (let [parsed-response (parse-xml raw-response)
+        content         (get-in parsed-response content-path)
+        majors          (:h2 content)
+        plans           (map #(->plans-map (:a %))
+                             (next (:p content)))]
+    (->> (interleave (range) majors plans)
+         (partition 3)
+         (reduce (fn [acc [idx major plans]]
+                   (assoc acc major {:idx  idx
+                                     :data plans}))
+                 {}))))
 
-(defn majors-w-plans!
-  "2023-1, 2023-2, ..."
-  [{:keys [semester on-success on-failure]}]
-  (n/http-request! {:method     :GET
-                    :url        (str base-url (string/replace semester #"-" ""))
-                    :on-success #(-> %
-                                     (parse-xml)
-                                     (parse-majors-w-plans)
-                                     (on-success))
-                    :on-failure (fn [error]
-                                  (js/console.error error)
-                                  (on-failure error))}))
+(defn create-url [semester]
+  (str base-url (string/replace semester #"-" "")))

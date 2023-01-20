@@ -1,5 +1,6 @@
 (ns horarios-fc.screens.pick-major.views
   (:require
+   [horarios-fc.parser.subs :as psubs]
    [horarios-fc.screens.pick-major.events :as events]
    [horarios-fc.screens.pick-major.subs :as subs]
    [re-frame.core :as rf]
@@ -17,7 +18,7 @@
    "Matemáticas Aplicadas"                ["❔" "🧮"]
    "Matemáticas"                          ["\uD83D\uDD22" "➕️"]})
 
-(defn major-card [{:keys [major]}]
+(defn major-card [major]
   [rn/touchable-highlight {:style          {:border-radius 12}
                            :active-opacity 0.7
                            :underlay-color "#DDDDDD"
@@ -55,15 +56,14 @@
                        :line-height 18}}
       major]]]])
 
-(defn screen* []
-  (let [majors (rf/subscribe [::subs/majors-list])]
+(defn screen* [] ;; TODO: generalize hardcoded semester
+  (let [majors (rf/subscribe [::subs/majors-list-by-semester "2023-2"])]
     (fn []
       [rn/view {:style {:flex             1
                         :background-color "#FAFAFA"}}
        [rn/view {:style {:flex 1, :row-gap 12}}
         [rn/text {:style {:color "#101010"}}
          "Selecciona la carrera a consultar"]
-
         [rn/scroll-view
          [rn/view {:style {:flex               1
                            :flex-direction     :row
