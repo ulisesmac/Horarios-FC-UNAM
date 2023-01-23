@@ -26,13 +26,18 @@
   (reduce (fn [m {[title & _ :as table-data] :td}]
             (if (nil? (:attr/text title))
               (let [[_ days hours classroom] table-data
-                    _ (prn table-data)
                     [last-key _last-val] (last m) ;; Belongs to the previous title and person
                     extra-days      (->days-vec (:attr/text days))
                     extra-hours     (->vec-hours (:attr/text hours))
                     extra-classroom (when-let [room (:a classroom)]
                                       {:url  (:attr/href room)
-                                       :room (-> room :attr/text (string/replace #"(|)" ""))})]
+                                       :room (as-> (:attr/text room) $
+                                               (string/split $ "(")
+                                               (update $ 1 #(apply str (drop-last %)))
+                                               (interpose " " $)
+                                               (reverse $)
+                                               (apply str $)
+                                               (string/trim $))})]
                 (update-in m [last-key :extra] conj {:days      extra-days
                                                      :hours     extra-hours
                                                      :classroom extra-classroom}))
@@ -44,7 +49,13 @@
                           :hours       (->vec-hours (:attr/text hours))
                           :classroom   (when-let [room (:a classroom)]
                                          {:url  (:attr/href room)
-                                          :room (-> room :attr/text (string/replace #"(|)" ""))})}))))
+                                          :room (as-> (:attr/text room) $
+                                                  (string/split $ "(")
+                                                  (update $ 1 #(apply str (drop-last %)))
+                                                  (interpose " " $)
+                                                  (reverse $)
+                                                  (apply str $)
+                                                  (string/trim $))})}))))
           {}
           html-schedule))
 
@@ -62,13 +73,19 @@
          (reduce (fn [m [idx group]]
                    (let [group-data   (as-> (:div group) $
                                         (if (vector? $)
-                                          [(first $) (second $)]
+                                          [(first $) (if (:i (get $ 1))
+                                                       (if (:ul (get $ 2))
+                                                         (merge (get $ 1) (get $ 2))
+                                                         (get $ 1))
+                                                       (get $ 2))]
                                           [$ nil]))
-                         group-id     (->> group-data first :strong (re-find #"\d+"))
-                         num-places   (->> group-data first :attr/text (re-find #"\d+") int)
+                         group-id     (some->> group-data first :strong (re-find #"\d+"))
+                         description  (->> group-data second :i)
+                         num-places   (some->> group-data first :attr/text (re-find #"\d+") int)
                          presentation (some->> group-data second :ul :li :a :attr/href)
                          schedule     (-> group :table :tr ->schedule-map)]
                      (assoc m group-id {:idx              idx
+                                        :description      description
                                         :places           num-places
                                         :schedule         schedule
                                         :presentation-url presentation})))
