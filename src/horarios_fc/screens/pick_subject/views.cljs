@@ -58,29 +58,32 @@
    "10:30" "🕥", "22:30" "🕥", "11" "🕚", "23" "🕚", "11:30" "🕦", "23:30" "🕦"})
 
 (defn group-details [{:keys [group-id places presentation-url description] :as group-data}]
-  [rn/view ;{:style {:border-width 0.5}}
-   [rn/view {:style {:flex-direction          :row
-                     :padding-vertical        8
-                     :padding-horizontal      14
-                     :background-color        (theme :primary-700)
-                     :align-items             :center
-                     :justify-content         :space-between
-                     ;:border-radius      8
-                     :border-top-left-radius  14
-                     :border-top-right-radius 14
-                     }}
+  [rn/view
+   [rn/view
+    [rn/view {:style {:flex-direction          :row
+                      :padding-vertical        8
+                      :padding-horizontal      14
+                      :background-color        (theme :primary-700)
+                      :align-items             :center
+                      :justify-content         :space-between
+                      :border-top-left-radius  14
+                      :border-top-right-radius 14}}
+     [rn/text {:style {:color       (theme :basic-100)
+                       :font-weight "700"}}
+      (str "Grupo " group-id)]
+     [rn/text {:style {:color       (theme :basic-100)
+                       :font-weight "700"}}
+      (str places " lugares")]]
 
-    [rn/text {:style {:color       (theme :basic-100)
-                      :font-weight "700"}}
-     (str "Grupo " group-id)]
-    [rn/text {:style {:color       (theme :basic-100)
-                      :font-weight "700"}}
-     (str places " lugares")]]
+    (when description
+      [rn/view {:style {:padding-vertical   8
+                        :padding-horizontal 14
+                        :background-color   (theme :primary-300)}}
+       [rn/text {:style {:color      (theme :basic-1000)
+                         :font-style :italic}}
+        (str "📖 " (string/capitalize description))]])]
 
-   (when description
-     [rn/view ;; TODO: stylize
-      [rn/text {:style {:color (theme :basic-1000)}}
-       description]])
+
    ;;
    [rn/view {:style {:flex                       1
                      :row-gap                    18
