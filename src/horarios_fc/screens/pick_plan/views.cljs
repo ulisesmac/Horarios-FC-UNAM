@@ -12,7 +12,7 @@
 (defn plan-button [{:keys [plan url]}]
   ;; TODO: fix this button
   [rn/touchable-highlight {:style          {:border-radius 20}
-                           :active-opacity 0.9
+                           :active-opacity 0.85
                            :underlay-color (theme :primary-100)
                            :on-press       #(rf/dispatch
                                              [::events/get-subjects-by-plan plan url])}

@@ -30,6 +30,18 @@
     (:plan schedule-shown-content)))
 
 (rf/reg-sub
+ :semester-num-selected
+ :<- [:schedule-shown-content]
+ (fn [schedule-shown-content]
+   (:semester-num schedule-shown-content)))
+
+(rf/reg-sub
+ :subject-selected
+ :<- [:schedule-shown-content]
+ (fn [schedule-shown-content]
+   (:subject schedule-shown-content)))
+
+(rf/reg-sub
  :requesting-data?
  (fn [db]
    (:requesting-data? db)))

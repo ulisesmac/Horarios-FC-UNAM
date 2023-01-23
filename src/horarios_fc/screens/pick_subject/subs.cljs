@@ -1,5 +1,6 @@
 (ns horarios-fc.screens.pick-subject.subs
   (:require
+   [clojure.string :as string]
    [horarios-fc.screens.pick-major.subs :as pick-major.subs]
    [horarios-fc.screens.pick-plan.subs :as pick-plan.subs]
    [re-frame.core :as rf]))
@@ -26,3 +27,23 @@
                                     (mapv (fn [[subject {:keys [url _data]}]]
                                             {:subject subject
                                              :url     url})))})))))
+
+(rf/reg-sub
+ ::groups-by-subject
+ :<- [::semesters-w-subjects]
+ :<- [:semester-num-selected]
+ :<- [:subject-selected]
+ (fn [[semesters semester-num subject]]
+   (get-in semesters [semester-num :data subject :data])))
+
+(rf/reg-sub
+ ::groups-by-subject-list
+ :<- [::groups-by-subject]
+ (fn [groups]
+   (->> groups
+        (sort-by (fn [[_semester-num {:keys [idx]}]]
+                   idx))
+        (mapv (fn [[group-id {:keys [places schedule presentation-url]}]]
+                (assoc schedule :group-id group-id
+                                :places places
+                                :presentation-url presentation-url))))))
