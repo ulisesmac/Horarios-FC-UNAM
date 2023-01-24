@@ -6,7 +6,7 @@
   {:flex               1
    :padding-horizontal 16
    :justify-content    :center
-   :row-gap            12
+   :row-gap            8
    :background-color   (theme :basic-100)})
 
 ;; Divider
