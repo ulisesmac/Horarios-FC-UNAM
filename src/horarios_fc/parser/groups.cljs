@@ -69,7 +69,8 @@
   (let [fixed-html  (group-html-classes raw-response)
         parsed-html (parse-xml fixed-html)
         groups      (->> (get-in parsed-html content-path) :div (drop 2))]
-    (->> groups (map-indexed #(vector %1 %2))
+    (->> groups
+         (map-indexed #(vector %1 %2))
          (reduce (fn [m [idx group]]
                    (let [group-data   (as-> (:div group) $
                                         (if (vector? $)
@@ -77,7 +78,7 @@
                                                        (if (:ul (get $ 2))
                                                          (merge (get $ 1) (get $ 2))
                                                          (get $ 1))
-                                                       (get $ 2))]
+                                                       (get $ 1))]
                                           [$ nil]))
                          group-id     (some->> group-data first :strong (re-find #"\d+"))
                          description  (->> group-data second :i)
