@@ -12,15 +12,18 @@
 (defn schedules-stack-screen []
   [nav-utils/create-stack-navigator
    {:native-stack-navigator schedules-stack
-    :screens                [{:component pick-major/screen
-                              :props     {:name    :schedule-major
-                                          :options {:title "Consulta de horarios"}}}
-                             {:component pick-plan/screen
-                              :props     {:name :schedule-plan}}
-                             {:component pick-subject/screen
-                              :props     {:name    :schedule-subject
+    :screens                [{:props     {:name    :schedule-major
                                           :options {:header-transparent true
-                                                    :header-title       ""}}}]}])
+                                                    :header-title       ""}}
+                              :component pick-major/screen}
+
+                             {:props     {:name :schedule-plan}
+                              :component pick-plan/screen}
+
+                             {:props     {:name    :schedule-subject
+                                          :options {:header-transparent true
+                                                    :header-title       ""}}
+                              :component pick-subject/screen}]}])
 
 
 (defn browse-schedules-icon [js-params]

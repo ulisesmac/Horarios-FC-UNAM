@@ -1,14 +1,8 @@
 (ns horarios-fc.events
   (:require
    [horarios-fc.parser.events :as p]
+   [horarios-fc.util :as util]
    [re-frame.core :as rf]))
-
-(def current-semester
-  (let [this-year-august (. (js/Date.) (setMonth 6))
-        now              (js/Date.)]
-    (if (>= now this-year-august)
-      (-> now (.getFullYear) (inc) (str "-" 1))
-      (-> now (.getFullYear) (str "-" 2)))))
 
 (rf/reg-event-fx
  :initialize-db
@@ -20,7 +14,7 @@
  ::load-app-state
  (fn [_ [_ state]]
    {:db (assoc state :app-loading? true)
-    :fx [[:dispatch [::p/get-majors {:semester       current-semester
+    :fx [[:dispatch [::p/get-majors {:semester       util/current-semester
                                      :on-success-evt [::set-app-loaded]}]]]}))
 
 (rf/reg-event-db
@@ -28,7 +22,7 @@
  (fn [db _]
    (-> db
        (assoc :app-loading? false)
-       (assoc-in [:schedule-shown-content :semester] current-semester))))
+       (assoc-in [:schedule-shown-content :semester] util/current-semester))))
 
 (rf/reg-event-fx
  :stop-requesting-data
