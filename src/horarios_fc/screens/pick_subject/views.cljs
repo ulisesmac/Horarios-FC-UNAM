@@ -1,9 +1,9 @@
 (ns horarios-fc.screens.pick-subject.views
   (:require
    [clojure.string :as string]
-   [horarios-fc.screens.pick-subject.style :as style]
    [horarios-fc.colors :refer [alpha theme]]
    [horarios-fc.screens.pick-subject.events :as events]
+   [horarios-fc.screens.pick-subject.style :as style]
    [horarios-fc.screens.pick-subject.subs :as subs]
    [re-frame.core :as rf]
    [react-native :as rn]
@@ -11,12 +11,12 @@
 
 (defn subject [{:keys [semester-num subject url]}]
   [rn/touchable-highlight
-   {:style          {:border-radius 18, :margin-horizontal 4}
+   {:style          {:border-radius 16}
     :underlay-color (alpha (theme :primary-100) 80)
     :on-press       #(rf/dispatch [::events/get-group-details semester-num subject url])}
-   [rn/view {:style {:border-radius      18
-                     :padding-vertical   14
-                     :padding-horizontal 18}}
+   [rn/view {:style {:border-radius      16
+                     :padding-vertical   6
+                     :padding-horizontal 12}}
     [rn/text {:style {:font-size 16
                       :color     (theme :primary-800)}}
      (str subject)]]])
@@ -24,27 +24,22 @@
 (defn semester-w-subjects [{:keys [semester-num subjects]}]
   (let [opened? (r/atom false)]
     (fn []
-      [rn/view
+      [rn/view {:style (when @opened?
+                         {:border-width     0.6
+                          :border-top-width 0
+                          :border-radius    22
+                          :border-color     (theme :primary-500)})}
        [rn/touchable-highlight {:style    {:border-radius 16}
                                 :on-press #(swap! opened? not)}
-        [rn/view {:style {:background-color   (theme :secondary-600)
-                          :border-radius      16
-                          :padding-vertical   12
-                          :padding-horizontal 18}}
-         [rn/view {:style {:flex-direction  :row
-                           :justify-content :space-between
-                           :align-items     :center}}
-          [rn/text {:style {:font-size   18
-                            :font-weight "500"
-                            :color       (theme :basic-100)}}
+        [rn/view {:style (merge style/semester-num
+                                (when @opened? style/semester-num-open))}
+         [rn/view {:style style/semester-num-content}
+          [rn/text {:style style/semester-num-text}
            (str semester-num)]
-
-          [rn/text {:style {:font-size   20
-                            :font-weight "800"
-                            :color       (theme :basic-100)}}
+          [rn/text {:style (assoc style/semester-num-text :font-size 22)}
            (if @opened? "-" "+")]]]]
        (when @opened?
-         [rn/view
+         [rn/view {:style {:row-gap 2, :padding 6}}
           (map (fn [{:keys [url] :as props}]
                  ^{:key url} [subject (assoc props :semester-num semester-num)])
                subjects)])])))
@@ -207,10 +202,7 @@
   (let [semesters (rf/subscribe [::subs/semesters-w-subjects-list])]
     (fn []
       [rn/view {:style {:flex 1}}
-       [rn/scroll-view {:content-container-style {:row-gap            20
-                                                  :padding-bottom     32
-                                                  :padding-horizontal 8
-                                                  :justify-content    :center}}
+       [rn/scroll-view {:content-container-style style/bottom-container}
         (map (fn [{:keys [semester-num] :as props}]
                ^{:key semester-num} [semester-w-subjects props])
              @semesters)]])))

@@ -23,7 +23,7 @@
 
 (def move-button-border {:border-radius 12})
 (def move-button (merge move-button-border
-                        {:background-color   (theme :primary-700)
+                        {:background-color   (theme :secondary-700)
                          :justify-content    :center
                          :align-items        :center
                          :padding-vertical   8
@@ -152,3 +152,25 @@
 
 (def room-text {:color       (theme :primary-900)
                 :font-weight "600"})
+
+;; Bottom
+(def bottom-container {:row-gap            20
+                       :padding-bottom     32
+                       :padding-horizontal 8
+                       :justify-content    :center})
+
+(def semester-num {:background-color   (theme :primary-600)
+                   :border-radius      16
+                   :padding-vertical   6
+                   :padding-horizontal 16})
+
+(def semester-num-open {:border-bottom-right-radius 0
+                        :border-bottom-left-radius  0})
+
+(def semester-num-content {:flex-direction  :row
+                           :justify-content :space-between
+                           :align-items     :center})
+
+(def semester-num-text {:font-size   16
+                        :font-weight "600"
+                        :color       (theme :basic-100)})
