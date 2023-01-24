@@ -17,7 +17,8 @@
   (let [{tab-screen :tab/screen, tab-navigator :tab/navigator} bottom-tabs]
     [navigation-container {:ref             nav-utils/navigation-ref
                            :initial-state   @(rf/subscribe [:navigation-state])
-                           :on-state-change #(rf/dispatch-sync [:store-navigation %])}
+                           :on-state-change #(rf/dispatch-sync
+                                              [:store-navigation-&-state %])}
      [tab-navigator {:screen-options {:header-shown              false
                                       :tab-bar-active-tint-color "green"
                                       :tab-bar-icon              tmp-tab-icon}}

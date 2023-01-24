@@ -1,6 +1,6 @@
 (ns react-native-async-storage.async-storage
   (:require
-   ["@react-native-async-storage/async-storage" :refer [AsyncStorage]]
+   ["@react-native-async-storage/async-storage" :default AsyncStorage]
    [cljs.core.async :refer [go take!]]
    [cljs.core.async.interop :refer [<p!]]
    [cljs.reader :refer [read-string]]

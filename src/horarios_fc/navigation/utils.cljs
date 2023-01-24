@@ -21,10 +21,11 @@
 (rf/reg-fx :navigate navigate)
 
 (rf/reg-event-fx
- :store-navigation
+ :store-navigation-&-state
  (fn [{db :db} [_ navigation-state]]
-   ;; TODO: persist it in local storage
-   {:db (assoc db :navigation-state navigation-state)}))
+   (let [new-db (assoc db :navigation-state navigation-state)]
+     {:db         new-db
+      :store-data [:db-state new-db]})))
 
 (rf/reg-sub
  :navigation-state

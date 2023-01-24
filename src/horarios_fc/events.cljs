@@ -13,7 +13,13 @@
 (rf/reg-event-fx
  :initialize-db
  (fn [_ _]
-   {:db {:app-loading? true}
+   {:db        {:app-loading? true}
+    :read-data [:db-state #(rf/dispatch [::load-app-state %])]}))
+
+(rf/reg-event-fx
+ ::load-app-state
+ (fn [_ [_ state]]
+   {:db (assoc state :app-loading? true)
     :fx [[:dispatch [::p/get-majors {:semester       current-semester
                                      :on-success-evt [::set-app-loaded]}]]]}))
 
@@ -24,7 +30,9 @@
        (assoc :app-loading? false)
        (assoc-in [:schedule-shown-content :semester] current-semester))))
 
-(rf/reg-event-db
+(rf/reg-event-fx
  :stop-requesting-data
- (fn [db]
-   (assoc db :requesting-data? false)))
+ (fn [{db :db} _]
+   (let [new-db (assoc db :requesting-data? false)]
+     {:db         new-db
+      :store-data [:db-state new-db]})))

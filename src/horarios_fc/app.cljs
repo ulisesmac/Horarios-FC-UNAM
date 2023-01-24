@@ -5,6 +5,7 @@
    [horarios-fc.subs]
    [re-frame.core :as rf]
    [react-native :as rn]
+   [react-native-async-storage.async-storage]
    [reagent.core :as r]
    [shadow.react-native :refer [render-root]]))
 
