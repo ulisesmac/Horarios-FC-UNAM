@@ -12,21 +12,16 @@
    [reagent.core :as r]))
 
 (defn plan-button [{:keys [plan url]}]
-  ;; TODO: fix this button
-  [rn/touchable-highlight {:style          {:border-radius 20}
-                           :active-opacity 0.85
-                           :underlay-color (theme :primary-100)
-                           :on-press       #(rf/dispatch
-                                             [::events/get-subjects-by-plan plan url])}
-   [rn/view {:style {:border-color       (theme :primary-600)
-                     :border-width       1
-                     :background-color   (alpha (theme :primary-100) 80)
-                     :border-radius      20
+  [rn/touchable-opacity {:style    {:border-radius 20}
+                         :on-press #(rf/dispatch
+                                     [::events/get-subjects-by-plan plan url])}
+   [rn/view {:style {:background-color   (theme :primary-500)
+                     :border-radius      16
                      :justify-content    :center
                      :align-items        :center
                      :padding-horizontal 24
-                     :padding-vertical   24}}
-    [rn/text {:style {:color       (theme :primary-600)
+                     :padding-vertical   18}}
+    [rn/text {:style {:color       (theme :basic-100)
                       :font-weight "500"
                       :font-size   16}}
      (some-> plan (string/capitalize))]]])
