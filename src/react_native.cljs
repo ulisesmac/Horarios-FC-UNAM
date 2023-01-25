@@ -14,6 +14,7 @@
 
 (def style-sheet rn/StyleSheet.create)
 
+(def activity-indicator (r/adapt-react-class rn/ActivityIndicator))
 
 ;; Logs
 (defn ignore-logs [v-strs]

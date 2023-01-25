@@ -4,6 +4,7 @@
    [horarios-fc.colors :refer [alpha theme]]
    [horarios-fc.screens.pick-subject.events :as events]
    [horarios-fc.screens.pick-subject.style :as style]
+   [horarios-fc.components.requesting-data :refer [requesting-data]]
    [horarios-fc.screens.pick-subject.subs :as subs]
    [re-frame.core :as rf]
    [react-native :as rn]
@@ -220,6 +221,7 @@
   (let [bigger-top? (r/atom false)]
     (fn []
       [rn/view {:style style/container}
+       [requesting-data]
        [top-panel {:flex-size (if @bigger-top? 4 1)}]
        [divider {:on-press-move #(swap! bigger-top? not)
                  :move-text     (str "Mover " (if @bigger-top? "⬆" "⬇"))}]

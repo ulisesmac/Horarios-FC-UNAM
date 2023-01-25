@@ -1,30 +1,14 @@
 (ns horarios-fc.screens.pick-major.views
   (:require
    [horarios-fc.colors :refer [alpha theme]]
+   [horarios-fc.components.requesting-data :refer [requesting-data]]
    [horarios-fc.screens.pick-major.events :as events]
+   [horarios-fc.components.major-icons :as mi]
    [horarios-fc.screens.pick-major.subs :as subs]
    [horarios-fc.util :as util]
    [re-frame.core :as rf]
    [react-native :as rn]
    [reagent.core :as r]))
-
-(defonce biología-icon (js/require "../resources/icons/majors/Biología.png"))
-(defonce ciencias-de-la-computación-icon (js/require "../resources/icons/majors/Ciencias-de-la-Computación.png"))
-(defonce ciencias-de-la-tierra-icon (js/require "../resources/icons/majors/Ciencias-de-la-Tierra.png"))
-(defonce física-icon (js/require "../resources/icons/majors/Física.png"))
-(defonce física-biomédica-icon (js/require "../resources/icons/majors/Física-biomédica.png"))
-(defonce matemáticas-icon (js/require "../resources/icons/majors/Matemáticas.png"))
-
-(defonce major-icon
-  {;"Actuaría"                             ["\uD83D\uDCB9" "📊"]
-   "Biología"                   biología-icon
-   "Ciencias de la Computación" ciencias-de-la-computación-icon
-   "Ciencias de la Tierra"      ciencias-de-la-tierra-icon
-   "Física"                     física-icon
-   "Física Biomédica"           física-biomédica-icon
-   ;"Manejo Sustentable de Zonas Costeras" ["\uD83C\uDF0A " "\uD83C\uDFDD"]
-   ;"Matemáticas Aplicadas"                ["❔" "🧮"]
-   "Matemáticas"                matemáticas-icon})
 
 (defn major-text [text]
   [rn/text {:android_hyphenationFrequency :normal
@@ -46,7 +30,7 @@
                      :padding-horizontal 6
                      :column-gap         4}}
     [rn/view {:style {:justify-content :center}}
-     (if-let [major-image-source (major-icon major)]
+     (if-let [major-image-source (mi/major-icon major)]
        [rn/image {:style  {:width  59
                            :height 70}
                   :source major-image-source}]
@@ -65,6 +49,7 @@
   (let [selected-semester (rf/subscribe [:semester-selected])]
     (fn []
       [rn/view {:style {:height              54
+                        :position            :relative
                         :justify-content     :center
                         :align-items         :center
                         :border-bottom-width 1
@@ -144,10 +129,12 @@
                @majors)]]))))
 
 (defn screen* []
-  [rn/view {:style {:flex               1
+  [rn/view {:style {:position           :relative
+                    :flex               1
                     :background-color   (theme :basic-100)
                     :padding-horizontal 15
                     :row-gap            2}}
+   [requesting-data]
    [header]
    [rn/view {:style {:row-gap 6, :flex 1}}
     [semester-options]

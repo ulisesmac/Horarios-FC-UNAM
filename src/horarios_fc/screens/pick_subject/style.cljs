@@ -3,10 +3,11 @@
    [horarios-fc.colors :refer [alpha theme]]))
 
 (def container
-  {:flex               1
+  {:position           :relative
+   :flex               1
    :padding-horizontal 16
    :justify-content    :center
-   :row-gap            8
+   :row-gap            6
    :background-color   (theme :basic-100)})
 
 ;; Divider
@@ -18,7 +19,7 @@
                :top              "50%"
                :left             0
                :right            0
-               :background-color (theme :basic-300)
+               :background-color (theme :secondary-800)
                :height           1})
 
 (def move-button-border {:border-radius 12})
@@ -39,11 +40,14 @@
    :font-weight "600"
    :color       (theme :secondary-600)})
 
-(def subject-container {:position           :relative
-                        :height             58
-                        :padding-vertical   6
-                        :padding-horizontal 28
-                        :justify-content    :center})
+(def subject-container {:position            :relative
+                        :height              58
+                        :padding-vertical    6
+                        :padding-horizontal  43
+                        :margin-horizontal   -15
+                        :justify-content     :center
+                        :border-bottom-width 1
+                        :border-bottom-color (theme :basic-300)})
 (def subject-text {:font-size  18
                    :text-align :center})
 (def subject-semester-text {:color       (theme :secondary-700)
@@ -51,7 +55,7 @@
 (def subject-text-bold {:color       (theme :primary-700)
                         :font-weight "600"})
 
-(def groups-list {:row-gap            18
+(def groups-list {:row-gap            24
                   :padding-bottom     12
                   :padding-horizontal 4})
 

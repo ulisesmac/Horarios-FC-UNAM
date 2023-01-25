@@ -17,8 +17,11 @@
                                                     :header-title       ""}}
                               :component pick-major/screen}
 
-                             {:props     {:name :schedule-plan}
+                             {:props     {:name    :schedule-plan
+                                          :options {:header-transparent true
+                                                    :header-title       ""}}
                               :component pick-plan/screen}
+
 
                              {:props     {:name    :schedule-subject
                                           :options {:header-transparent true
