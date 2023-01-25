@@ -65,7 +65,7 @@
                         :align-items         :center
                         :border-bottom-width 1
                         :margin-horizontal   -15
-                        :border-bottom-color (theme :basic-300)}}
+                        :border-bottom-color (theme :basic-400)}}
        [rn/text {:style {:font-size   22
                          :font-weight "500"
                          :color       (theme :primary-600)}}
@@ -79,8 +79,8 @@
     (fn []
       [rn/touchable-highlight {:style    {:border-radius 16}
                                :on-press (when-not (= @selected-semester semester)
-                                           (fn []
-                                             (prn semester)))}
+                                           #(rf/dispatch
+                                             [::events/choose-semester semester]))}
        [rn/view {:style {:padding-horizontal 14
                          :padding-vertical   6
                          :border-width       1
