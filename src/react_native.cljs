@@ -19,3 +19,24 @@
 ;; Logs
 (defn ignore-logs [v-strs]
   (.ignoreLogs rn/LogBox (clj->js v-strs)))
+
+;; Animated
+(def animated rn/Animated)
+
+(def animated-view (r/adapt-react-class (.-View animated)))
+
+(defn animated-value
+  "new Animated.Value(initial-value)"
+  [initial-value]
+  (new (.-Value animated) initial-value))
+
+(defn animated-timing
+  "Animated.timing(animation-ref, anim-params)"
+  [animation-ref anim-params]
+  (let [js-anim-params (clj->js anim-params)]
+    (. animated (timing animation-ref js-anim-params))))
+
+(defn start-animated-timing
+  "Animated.timing(animation-ref, anim-params).start"
+  [animation-ref anim-params]
+  (.start (animated-timing animation-ref anim-params)))

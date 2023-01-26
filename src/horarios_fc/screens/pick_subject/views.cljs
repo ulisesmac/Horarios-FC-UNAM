@@ -1,10 +1,11 @@
 (ns horarios-fc.screens.pick-subject.views
   (:require
+   ["react" :refer [useRef useState]]
    [clojure.string :as string]
    [horarios-fc.colors :refer [alpha theme]]
+   [horarios-fc.components.requesting-data :refer [requesting-data]]
    [horarios-fc.screens.pick-subject.events :as events]
    [horarios-fc.screens.pick-subject.style :as style]
-   [horarios-fc.components.requesting-data :refer [requesting-data]]
    [horarios-fc.screens.pick-subject.subs :as subs]
    [re-frame.core :as rf]
    [react-native :as rn]
@@ -180,23 +181,24 @@
         selected-semester-num (rf/subscribe [:semester-num-selected])
         groups-list           (rf/subscribe [::subs/groups-by-subject-list])]
     (fn [{:keys [flex-size]}]
-      [rn/view {:style {:flex            flex-size
-                        :justify-content :center}}
-       (if-not @selected-subject
-         ;; Instructions
-         [rn/text {:style (style/instructions)}
-          (str "Elige un semestre y materia")]
-         [rn/view {:style {:flex    1
-                           :row-gap 4}}
-          ;; Subject title
-          [subject-title {:semester-num @selected-semester-num
-                          :subject      @selected-subject}]
-          ;; List of groups
-          [rn/view {:style {:flex 1}}
-           [rn/scroll-view {:content-container-style style/groups-list}
-            (map (fn [{:keys [group-id] :as group-data}]
-                   ^{:key group-id} [group-details group-data])
-                 @groups-list)]]])])))
+      [rn/animated-view {:style [{:flex flex-size}]}
+       [rn/view {:style {:flex            1
+                         :justify-content :center}}
+        (if-not @selected-subject
+          ;; Instructions
+          [rn/text {:style (style/instructions)}
+           (str "Elige un semestre y materia")]
+          [rn/view {:style {:flex    1
+                            :row-gap 4}}
+           ;; Subject title
+           [subject-title {:semester-num @selected-semester-num
+                           :subject      @selected-subject}]
+           ;; List of groups
+           [rn/view {:style {:flex 1}}
+            [rn/scroll-view {:content-container-style style/groups-list}
+             (map (fn [{:keys [group-id] :as group-data}]
+                    ^{:key group-id} [group-details group-data])
+                  @groups-list)]]])]])))
 
 
 (defn bottom-panel []
@@ -220,11 +222,22 @@
 (defn screen* []
   (let [bigger-top? (r/atom false)]
     (fn []
-      [rn/view {:style style/container}
-       [requesting-data]
-       [top-panel {:flex-size (if @bigger-top? 4 1)}]
-       [divider {:on-press-move #(swap! bigger-top? not)
-                 :move-text     (str "Mover " (if @bigger-top? "⬆" "⬇"))}]
-       [bottom-panel]])))
+      (let [move-anim    (.-current (useRef (rn/animated-value 1)))
+            make-bigger  (fn []
+                           (reset! bigger-top? true)
+                           (rn/start-animated-timing move-anim {:toValue         4
+                                                                :duration        350
+                                                                :useNativeDriver false}))
+            make-smaller (fn []
+                           (reset! bigger-top? false)
+                           (rn/start-animated-timing move-anim {:toValue         1
+                                                                :duration        350
+                                                                :useNativeDriver false}))]
+        [rn/view {:style style/container}
+         [requesting-data]
+         [top-panel {:flex-size move-anim}]
+         [divider {:on-press-move #(if @bigger-top? (make-smaller) (make-bigger))
+                   :move-text     (str "Mover " (if @bigger-top? "⬆" "⬇"))}]
+         [bottom-panel]]))))
 
-(defn screen [] (r/as-element [screen*]))
+(defn screen [] (r/as-element [:f> screen*]))
