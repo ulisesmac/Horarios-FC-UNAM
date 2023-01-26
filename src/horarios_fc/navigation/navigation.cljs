@@ -16,7 +16,7 @@
                            :on-state-change #(rf/dispatch-sync
                                               [:store-navigation-&-state %])}
      [tab-navigator {:screen-options {:header-shown              false
-                                      :tab-bar-active-tint-color (theme :primary-600)
+                                      :tab-bar-active-tint-color (theme :secondary-600)
                                       :tab-bar-label-style       {:font-size     12
                                                                   :margin-bottom 4
                                                                   :font-weight   "600"}}}

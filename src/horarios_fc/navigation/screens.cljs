@@ -1,5 +1,6 @@
 (ns horarios-fc.navigation.screens
   (:require
+   [horarios-fc.components.navigation-icons :as nav-icons]
    [horarios-fc.navigation.utils :as nav-utils]
    [horarios-fc.screens.pick-major.views :as pick-major]
    [horarios-fc.screens.pick-plan.views :as pick-plan]
@@ -28,22 +29,24 @@
                                                     :header-title       ""}}
                               :component pick-subject/screen}]}])
 
+(defn nav-icon [{:keys [focused active inactive]}]
+  [rn/view {:style {:margin-bottom -4}}
+   [rn/image {:style  {:height 28
+                       :width  28}
+              :source (if focused active inactive)}]])
+
 
 (defn browse-schedules-icon [js-params]
-  (let [{:keys [focused color size]} (js->clj js-params :keywordize-keys true)]
-    (r/as-element
-     [rn/view
-      [rn/text {:style (merge {:font-size 24}
-                              (when focused {:color color}))}
-       "🧭"]])))
+  (r/as-element
+   [nav-icon {:focused  (.-focused js-params)
+              :active   nav-icons/browse-active-icon
+              :inactive nav-icons/browse-inactive-icon}]))
 
 (defn my-schedule-icon [js-params]
-  (let [{:keys [focused color size]} (js->clj js-params :keywordize-keys true)]
-    (r/as-element
-     [rn/view
-      [rn/text {:style (merge {:font-size 24}
-                              (when focused {:color color}))}
-       "🕰"]])))
+  (r/as-element
+   [nav-icon {:focused  (.-focused js-params)
+              :active   nav-icons/schedule-active-icon
+              :inactive nav-icons/schedule-inactive-icon}]))
 
 (defn tab-screens []
   [{:props     {:name    :schedule-tab
@@ -51,6 +54,6 @@
                           :tab-bar-icon browse-schedules-icon}}
     :component #(r/as-element [schedules-stack-screen])}
    {:props     {:name    :my-schedule
-                :options {:title "Mi horario"
+                :options {:title        "Mi horario"
                           :tab-bar-icon my-schedule-icon}}
     :component pick-major/screen}])
