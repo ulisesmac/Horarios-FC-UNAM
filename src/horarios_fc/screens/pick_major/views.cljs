@@ -20,19 +20,19 @@
 (defn major-card [major]
   [rn/touchable-opacity {:on-press #(rf/dispatch [::events/choose-major major])}
    [rn/view {:style {:flex-direction     :row
-                     :background-color   (alpha (theme :primary-100) 30)
+                     :background-color   (alpha (theme :primary-100) 20)
                      :border-radius      16
                      :border-width       1
                      :border-color       (theme :primary-800)
                      :width              185
-                     :height             120
+                     :height             108
                      :padding-vertical   12
                      :padding-horizontal 6
                      :column-gap         4}}
     [rn/view {:style {:justify-content :center}}
      (if-let [major-image-source (mi/major-icon major)]
-       [rn/image {:style  {:width  59
-                           :height 70}
+       [rn/image {:style  {:width  58
+                           :height 58}
                   :source major-image-source}]
        [rn/text {:style {:font-size 42
                          :color     (theme :basic-1000)}}
