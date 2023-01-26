@@ -165,7 +165,7 @@
 
 (def semester-num {:background-color   (theme :primary-600)
                    :border-radius      16
-                   :padding-vertical   6
+                   :padding-vertical   8
                    :padding-horizontal 16})
 
 (def semester-num-open {:border-bottom-right-radius 0

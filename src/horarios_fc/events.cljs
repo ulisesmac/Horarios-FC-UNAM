@@ -7,21 +7,42 @@
 (rf/reg-event-fx
  :initialize-db
  (fn [_ _]
-   {:db        {:app-loading? true}
+   {:db        {:app-loading? true, :requesting-data? true}
     :read-data [:db-state #(rf/dispatch [::load-app-state %])]}))
 
 (rf/reg-event-fx
  ::load-app-state
  (fn [_ [_ state]]
-   {:db (assoc state :app-loading? true)
+   {:db (assoc state :app-loading? true
+                     :requesting-data? true)
     :fx [[:dispatch [::p/get-majors {:semester       util/current-semester
-                                     :on-success-evt [::set-app-loaded]}]]]}))
+                                     :on-success-evt [::request-subjects]}]]]}))
+
+(rf/reg-event-fx
+ ::request-subjects
+ (fn [{db :db} _]
+   (let [next-evt (if-let [plan (-> db :schedule-shown-content :plan)]
+                    [::p/get-subjects {:plan-url       plan
+                                       :on-success-evt [::request-groups]}]
+                    [::set-app-loaded])]
+     {:fx [[:dispatch next-evt]]})))
+
+(rf/reg-event-fx
+ ::request-groups
+ (fn [{db :db} _]
+   (let [app-loaded-evt [::set-app-loaded]
+         next-evt       (if-let [subject (-> db :schedule-shown-content :subject)]
+                          [::p/get-groups {:subject-url    subject
+                                           :on-success-evt app-loaded-evt}]
+                          app-loaded-evt)]
+     {:fx [[:dispatch next-evt]]})))
 
 (rf/reg-event-db
  ::set-app-loaded
  (fn [db _]
    (-> db
-       (assoc :app-loading? false)
+       (assoc :app-loading? false
+              :requesting-data? false)
        (assoc-in [:schedule-shown-content :semester] util/current-semester))))
 
 (rf/reg-event-fx
