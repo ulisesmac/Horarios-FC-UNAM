@@ -20,7 +20,7 @@
 (defn major-card [major]
   [rn/touchable-opacity {:on-press #(rf/dispatch [::events/choose-major major])}
    [rn/view {:style {:flex-direction     :row
-                     :background-color   (alpha (theme :primary-100) 10)
+                     :background-color   (alpha (theme :primary-100) 30)
                      :border-radius      16
                      :border-width       1
                      :border-color       (theme :primary-800)

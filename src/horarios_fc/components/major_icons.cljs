@@ -1,11 +1,11 @@
 (ns horarios-fc.components.major-icons)
 
-(defonce biología-icon (js/require "../resources/icons/majors/Biología.png"))
-(defonce ciencias-de-la-computación-icon (js/require "../resources/icons/majors/Ciencias-de-la-Computación.png"))
-(defonce ciencias-de-la-tierra-icon (js/require "../resources/icons/majors/Ciencias-de-la-Tierra.png"))
-(defonce física-icon (js/require "../resources/icons/majors/Física.png"))
-(defonce física-biomédica-icon (js/require "../resources/icons/majors/Física-biomédica.png"))
-(defonce matemáticas-icon (js/require "../resources/icons/majors/Matemáticas.png"))
+(defonce biología-icon (js/require "../resources/icons/majors/biologia.png"))
+(defonce ciencias-de-la-computación-icon (js/require "../resources/icons/majors/computacion.png"))
+(defonce ciencias-de-la-tierra-icon (js/require "../resources/icons/majors/tierra.png"))
+(defonce física-icon (js/require "../resources/icons/majors/fisica.png"))
+(defonce física-biomédica-icon (js/require "../resources/icons/majors/biomedica.png"))
+(defonce matemáticas-icon (js/require "../resources/icons/majors/matematicas.png"))
 
 (defonce major-icon
   {;"Actuaría"                             ["\uD83D\uDCB9" "📊"]
