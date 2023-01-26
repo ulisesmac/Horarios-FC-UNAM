@@ -43,8 +43,9 @@
    (->> groups
         (sort-by (fn [[_semester-num {:keys [idx]}]]
                    idx))
-        (mapv (fn [[group-id {:keys [places schedule presentation-url description]}]]
+        (mapv (fn [[group-id {:keys [places students schedule presentation-url description]}]]
                 (assoc schedule :group-id group-id
                                 :places places
+                                :students students
                                 :description description
                                 :presentation-url presentation-url))))))

@@ -55,13 +55,19 @@
    "20:30" "🕣", "9" "🕘", "21" "🕘", "9:30" "🕤", "21:30" "🕤", "10" "🕙", "22" "🕙",
    "10:30" "🕥", "22:30" "🕥", "11" "🕚", "23" "🕚", "11:30" "🕦", "23:30" "🕦"})
 
-(defn group-header [{:keys [group-id places description]}]
+(defn group-header [{:keys [group-id places students description]}]
   [rn/view
    [rn/view {:style style/group-header}
     [rn/text {:style style/group-header-text}
      (str "Grupo " group-id)]
-    [rn/text {:style style/group-header-text}
-     (str places " lugares")]]
+    (let [places-text   (when places (str places " lugares"))
+          students-text (when students (if (= 1 students)
+                                         "1 alumno"
+                                         (str students " alumnos")))]
+      [rn/text {:style style/group-header-text}
+       (if (and places-text students-text)
+         (str places-text " / " students-text)
+         (or places-text students-text))])]
    (when description
      [rn/view {:style style/group-header-description}
       [rn/text {:style style/group-header-description-text}
@@ -76,7 +82,7 @@
       [rn/text {:style style/unassigned-person-name}
        "Sin asignar, "])
     [rn/text {:style style/person-role}
-     role]]])
+     (string/replace role #"I" "")]]])
 
 (defn- schedule-info [{:keys [days hours]}]
   [rn/view {:style style/schedule}
@@ -148,10 +154,11 @@
      [rn/text {:style style/presentation-button-text}
       "📃 Presentación"]]]])
 
-(defn group-details [{:keys [group-id places presentation-url description] :as group-data}]
+(defn group-details [{:keys [group-id places students presentation-url description] :as group-data}]
   [rn/view
    [group-header {:group-id    group-id
                   :places      places
+                  :students    students
                   :description description}]
    [rn/view {:style style/group-body}
     (map (fn [[role {:keys [person-name days hours classroom extra] :as _details}]]
@@ -163,7 +170,7 @@
                         :hours       hours
                         :classroom   classroom
                         :extra       extra}])
-         (dissoc group-data :presentation-url :places :group-id :description))]
+         (dissoc group-data :presentation-url :places :group-id :description :students))]
    ;;
    (when presentation-url
      [presentation-button {:presentation-url presentation-url}])])

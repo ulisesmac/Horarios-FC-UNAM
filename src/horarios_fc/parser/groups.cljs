@@ -23,6 +23,7 @@
     (string/split #"a")))
 
 (defn- ->schedule-map [html-schedule]
+  ;; TODO: refactor
   (reduce (fn [m {[title & _ :as table-data] :td}]
             (if (nil? (:attr/text title))
               (let [[_ days hours classroom] table-data
@@ -41,8 +42,12 @@
                 (update-in m [last-key :extra] conj {:days      extra-days
                                                      :hours     extra-hours
                                                      :classroom extra-classroom}))
-              (let [[_ person days hours classroom] table-data]
-                (assoc m (:attr/text title)
+              (let [[_ person days hours classroom] table-data
+                    title-key (loop [new-title (:attr/text title)]
+                                (if-not (get m new-title)
+                                  new-title
+                                  (recur (str new-title "I"))))]
+                (assoc m title-key
                          {:person-name (:attr/text (:a person))
                           :url         (:attr/href (:a person))
                           :days        (->days-vec (:attr/text days))
@@ -65,6 +70,15 @@
       (string/replace #"<div style=\"padding-top: 10px" "</div><div><div style=\"padding-top: 10px")
       (string/replace #"</table>\s*</div>\s*<p>" "</table></div></div><p>")))
 
+(defn get-number-students [group-data]
+  (let [raw-text (some->> group-data first :attr/text)]
+    (if (= "Un alumno" (str raw-text))
+      1
+      (some->> raw-text
+        (re-find #"\d+ alumnos")
+        (re-find #"\d+")
+        int))))
+
 (defn parse-classes-details [raw-response]
   (let [fixed-html  (group-html-classes raw-response)
         parsed-html (parse-xml fixed-html)
@@ -82,12 +96,14 @@
                                           [$ nil]))
                          group-id     (some->> group-data first :strong (re-find #"\d+"))
                          description  (->> group-data second :i)
-                         num-places   (some->> group-data first :attr/text (re-find #"\d+") int)
+                         num-places   (some->> group-data first :attr/text (re-find #"\d+ lugares") (re-find #"\d+") int)
+                         num-students (get-number-students group-data)
                          presentation (some->> group-data second :ul :li :a :attr/href)
                          schedule     (-> group :table :tr ->schedule-map)]
                      (assoc m group-id {:idx              idx
                                         :description      description
                                         :places           num-places
+                                        :students         num-students
                                         :schedule         schedule
                                         :presentation-url presentation})))
                  {}))))
