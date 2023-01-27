@@ -6,12 +6,13 @@
    [reagent.core :as r]))
 
 (defn theme-button [{:keys [text on-press disabled]}]
-  [rn/touchable-opacity (when-not disabled {:on-press on-press})
+  [rn/touchable-highlight (when-not disabled {:style    {:border-radius 12}
+                                              :on-press on-press})
    [rn/view {:style {:background-color   (if disabled
                                            (theme-color :basic-400 :basic-700)
                                            (theme-color :primary-600 :primary-800))
-                     :padding-vertical   8
-                     :padding-horizontal 18
+                     :padding-vertical   12
+                     :padding-horizontal 24
                      :border-radius      12}}
     [rn/text {:style {:color       (if disabled
                                      (theme-color :basic-700 :basic-300)
@@ -32,8 +33,7 @@
                          :color      (theme-color :basic-1000 :basic-200)
                          :text-align :center}}
         "Tema"]
-       [rn/view {:style {:row-gap    8
-                         :column-gap 12}}
+       [rn/view {:style {:row-gap 12}}
         [rn/view {:style {:align-items     :center
                           :justify-content :center}}
          [theme-button {:text     "🤖 Automático"
@@ -41,7 +41,7 @@
                         :on-press #(rf/dispatch [:set-theme :auto])}]]
 
         [rn/view {:style {:flex-direction :row
-                          :column-gap     12}}
+                          :column-gap     18}}
          [theme-button {:text     "☀ Claro"
                         :disabled (= @current-theme :light)
                         :on-press #(rf/dispatch [:set-theme :light])}]

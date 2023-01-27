@@ -1,9 +1,9 @@
 (ns horarios-fc.screens.pick-major.views
   (:require
-   [horarios-fc.screens.pick-major.style :as style]
    [horarios-fc.components.major-icons :as mi]
    [horarios-fc.components.requesting-data :refer [requesting-data]]
    [horarios-fc.screens.pick-major.events :as events]
+   [horarios-fc.screens.pick-major.style :as style]
    [horarios-fc.screens.pick-major.subs :as subs]
    [horarios-fc.util :as util]
    [re-frame.core :as rf]

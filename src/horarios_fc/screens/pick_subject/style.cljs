@@ -126,7 +126,7 @@
    :background-color   (alpha (theme-color :primary-300 :primary-1000) 40)})
 
 (defn person-name []
-  {:color       (theme-color :basic-1000 :primary-200)
+  {:color       (theme-color :basic-1000 :primary-100)
    :font-weight "600"})
 (defn unassigned-person-name []
   {:color       (theme-color :basic-1000 :basic-300)
@@ -209,16 +209,16 @@
   {:border-width     0.6
    :border-top-width 0
    :border-radius    22
-   :border-color     (theme-color :primary-500 :primary-800)})
+   :border-color     (theme-color :primary-500 :primary-900)})
 
 (def subject-name-radius {:border-radius 16})
 
 (defn subject-name-underlay-color []
-  (alpha (theme-color :primary-100 :primary-1000) 80) )
+  (alpha (theme-color :primary-100 :primary-1000) 80))
 
 (def subject-name-container {:border-radius      16
                              :padding-vertical   8
                              :padding-horizontal 12})
 (defn subject-name-text []
   {:font-size 16
-   :color     (theme-color :primary-800 :primary-400)})
+   :color     (theme-color :primary-800 :basic-300)})

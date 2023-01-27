@@ -24,11 +24,11 @@
   {:text-align  :center
    :font-size   26
    :font-weight "500"
-   :color       (theme-color :primary-700 :primary-600)})
+   :color       (theme-color :primary-700 :primary-100)})
 
 ;; bottom panel
 (def bottom-panel {:flex 2})
-(def plan-listing {:flex               1
+(def plan-listing {:flex-grow          1
                    :row-gap            18
                    :padding-vertical   12
                    :padding-horizontal 8
@@ -45,6 +45,6 @@
    :padding-vertical   18})
 
 (defn plan-button-text []
-  {:color       (theme-color :basic-100 :primary-100)
+  {:color       (theme-color :basic-100 :basic-200)
    :font-weight "500"
    :font-size   16})

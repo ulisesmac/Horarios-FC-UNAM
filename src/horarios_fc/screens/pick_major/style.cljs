@@ -33,7 +33,7 @@
 (defn subtitle-text []
   {:font-size   18
    :font-weight "500"
-   :color       (theme-color :primary-800 :primary-700)})
+   :color       (theme-color :primary-800 :basic-300)})
 
 (def semester-container {:flex-direction     :row
                          :align-items        :center
@@ -51,7 +51,7 @@
    :border-width       1
    :border-radius      12
    :border-color       (if active?
-                         (theme :secondary-700)
+                         (theme-color :secondary-700 :secondary-600)
                          (theme-color :primary-700 :primary-600))
    :background-color   (if active?
                          (theme-color :secondary-100 :secondary-900)
@@ -63,8 +63,8 @@
 (defn semester-button-text [active?]
   {:font-weight "500"
    :color       (if active?
-                  (theme-color :secondary-700 :secondary-600)
-                  (theme-color :primary-700 :primary-500))})
+                  (theme-color :secondary-700 :secondary-500)
+                  (theme-color :primary-700 :primary-400))})
 
 ;; Majors
 (def majors-container {:flex              1
@@ -81,10 +81,10 @@
 
 (defn major []
   {:flex-direction     :row
-   :background-color   (alpha (theme-color :primary-100 :primary-1000) 30)
+   :background-color   (alpha (theme-color :primary-100 :primary-1100) 30)
    :border-radius      16
    :border-width       1
-   :border-color       (theme-color :primary-800 :primary-700)
+   :border-color       (theme-color :primary-800 :primary-300)
    :width              185
    :height             108
    :padding-vertical   12
@@ -103,4 +103,4 @@
 (defn major-text []
   {:font-size   17
    :font-weight "600"
-   :color       (theme-color :primary-800 :primary-600)})
+   :color       (theme-color :primary-800 :basic-300)})
