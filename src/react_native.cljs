@@ -43,5 +43,6 @@
 
 ;; Theme
 (def appearance rn/Appearance)
+(def use-color-scheme rn/useColorScheme)
 (defn get-color-scheme []
   (keyword (.getColorScheme appearance)))

@@ -4,13 +4,19 @@
    [horarios-fc.navigation.screens :as screens]
    [horarios-fc.navigation.utils :as nav-utils]
    [re-frame.core :as rf]
+   [react-native :as rn]
    [react-navigation.bottom-tabs :refer [create-bottom-tab-navigator]]
    [react-navigation.native :refer [create-navigation-container-ref navigation-container]]))
 
 (defonce bottom-tabs (create-bottom-tab-navigator))
 
 (defn app-navigator []
-  (let [{tab-screen :tab/screen, tab-navigator :tab/navigator} bottom-tabs]
+  (let [new-color-scheme (rn/use-color-scheme)
+        {tab-screen :tab/screen, tab-navigator :tab/navigator} bottom-tabs]
+    ;; Theme update
+    (when (not= new-color-scheme @(rf/subscribe [:theme]))
+      (rf/dispatch-sync [:set-theme (keyword new-color-scheme)]))
+    ;;
     [navigation-container {:ref             nav-utils/navigation-ref
                            :initial-state   @(rf/subscribe [:navigation-state])
                            :on-state-change #(rf/dispatch-sync
