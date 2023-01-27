@@ -12,7 +12,7 @@
 (defn root []
   (let [loading? (rf/subscribe [:app-loading?])]
     (fn []
-      (if @loading?
+      (if @loading? ;; TODO: add loading screen
         [rn/text {:style {:color "#101010"}}
          "Loading app"]
         [:f> nav/app-navigator]))))

@@ -1,4 +1,7 @@
-(ns horarios-fc.colors)
+(ns horarios-fc.colors
+  (:require
+   [react-native :as rn]
+   [re-frame.core :as rf]))
 
 (def theme
   {:primary-100   "#D4F0FE"
@@ -10,6 +13,9 @@
    :primary-700   "#1652B6"
    :primary-800   "#0E3992"
    :primary-900   "#082879"
+   :primary-1000  "#07205d"
+   :primary-1100  "#041436"
+   :primary-1200  "#031026"
    :secondary-100 "#bcf6cd"
    :secondary-200 "#8ff0ac"
    :secondary-300 "#62ea8b"
@@ -69,3 +75,28 @@
 
 (defn alpha [color percentage]
   (str color percentage))
+
+(rf/reg-event-db
+ ::set-theme
+ (fn [db [_ theme-variant]]
+   (assoc db :theme-variant theme-variant)))
+
+(rf/reg-sub
+ :theme
+ (fn [db]
+   (get db :theme-variant :auto)))
+
+(defn theme-color
+  ([light-color]
+   (theme-color light-color light-color))
+  ([light-color dark-color]
+   (let [theme-stored  @(rf/subscribe [:theme])
+         theme-variant (if (= theme-stored :auto)
+                         (rn/get-color-scheme)
+                         theme-stored)
+         actual-color  (if (= theme-variant :dark)
+                         dark-color
+                         light-color)]
+     (if (keyword? actual-color)
+       (theme actual-color)
+       actual-color))))

@@ -1,6 +1,5 @@
 (ns horarios-fc.screens.pick-subject.subs
   (:require
-   [clojure.string :as string]
    [horarios-fc.screens.pick-major.subs :as pick-major.subs]
    [horarios-fc.screens.pick-plan.subs :as pick-plan.subs]
    [re-frame.core :as rf]))

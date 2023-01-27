@@ -10,7 +10,7 @@
 
 (rf/reg-event-fx
  ::get-majors
- (fn [{db :db} [_ {:keys [semester on-success-evt]}]]
+ (fn [{db :db} [_ {:keys [semester on-success-evt on-failure-evt]}]]
    (let [stored-time (get-in db [:schedule semester :date])]
      (if (< stored-time (today-at-6))
        {:http-request {:method     :GET
@@ -19,7 +19,7 @@
                                                   semester
                                                   on-success-evt
                                                   (pm/parse-majors-w-plans %)])
-                       :on-failure #(js/console.error %)}}
+                       :on-failure #(rf/dispatch on-failure-evt)}}
        {:fx [[:dispatch on-success-evt]]}))))
 
 (rf/reg-event-fx
@@ -33,7 +33,7 @@
 
 (rf/reg-event-fx
  ::get-subjects
- (fn [{db :db} [_ {:keys [plan-url on-success-evt]}]]
+ (fn [{db :db} [_ {:keys [plan-url on-success-evt on-failure-evt]}]]
    (let [{:keys [semester major plan]} (:schedule-shown-content db)
          stored-time (get-in db [:schedule semester :data major :data plan :date])]
      (if (< stored-time (today-at-6))
@@ -41,7 +41,7 @@
                        :url        (ps/create-url plan-url)
                        :on-success #(rf/dispatch
                                      [::store-subjects on-success-evt (ps/parse-subjects %)])
-                       :on-failure #(js/console.error %)}}
+                       :on-failure #(rf/dispatch on-failure-evt)}}
        {:fx [[:dispatch on-success-evt]]}))))
 
 (rf/reg-event-fx
@@ -55,7 +55,7 @@
 
 (rf/reg-event-fx
  ::get-groups
- (fn [{db :db} [_ {:keys [subject-url on-success-evt]}]]
+ (fn [{db :db} [_ {:keys [subject-url on-success-evt on-failure-evt]}]]
    (let [{:keys [semester major plan semester-num subject]} (:schedule-shown-content db)
          stored-time (get-in db [:schedule semester :data major :data plan :data
                                  semester-num :data subject :date])]
@@ -64,7 +64,7 @@
                        :url        (pg/create-url subject-url)
                        :on-success #(rf/dispatch
                                      [::store-groups on-success-evt (pg/parse-classes-details %)])
-                       :on-failure #(js/console.error %)}}
+                       :on-failure #(rf/dispatch on-failure-evt)}}
        {:fx [[:dispatch on-success-evt]]}))))
 
 (rf/reg-event-fx

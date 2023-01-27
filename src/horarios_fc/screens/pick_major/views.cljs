@@ -1,9 +1,9 @@
 (ns horarios-fc.screens.pick-major.views
   (:require
-   [horarios-fc.colors :refer [alpha theme]]
+   [horarios-fc.screens.pick-major.style :as style]
+   [horarios-fc.components.major-icons :as mi]
    [horarios-fc.components.requesting-data :refer [requesting-data]]
    [horarios-fc.screens.pick-major.events :as events]
-   [horarios-fc.components.major-icons :as mi]
    [horarios-fc.screens.pick-major.subs :as subs]
    [horarios-fc.util :as util]
    [re-frame.core :as rf]
@@ -12,33 +12,19 @@
 
 (defn major-text [text]
   [rn/text {:android_hyphenationFrequency :normal
-            :style                        {:font-size   17
-                                           :font-weight "600"
-                                           :color       (theme :primary-800)}}
+            :style                        (style/major-text)}
    text])
 
 (defn major-card [major]
   [rn/touchable-opacity {:on-press #(rf/dispatch [::events/choose-major major])}
-   [rn/view {:style {:flex-direction     :row
-                     :background-color   (alpha (theme :primary-100) 20)
-                     :border-radius      16
-                     :border-width       1
-                     :border-color       (theme :primary-800)
-                     :width              185
-                     :height             108
-                     :padding-vertical   12
-                     :padding-horizontal 6
-                     :column-gap         4}}
-    [rn/view {:style {:justify-content :center}}
+   [rn/view {:style (style/major)}
+    [rn/view {:style style/major-image-container}
      (if-let [major-image-source (mi/major-icon major)]
-       [rn/image {:style  {:width  58
-                           :height 58}
+       [rn/image {:style  style/major-image
                   :source major-image-source}]
-       [rn/text {:style {:font-size 42
-                         :color     (theme :basic-1000)}}
+       [rn/text {:style style/major-anon-text}
         "❔"])]
-    [rn/view {:style {:flex            1
-                      :justify-content :center}}
+    [rn/view {:style style/major-text-container}
      (if (= major "Ciencias de la Computación")
        [:<>
         [major-text "Ciencias de la"]
@@ -48,99 +34,55 @@
 (defn header []
   (let [selected-semester (rf/subscribe [:semester-selected])]
     (fn []
-      [rn/view {:style {:height              54
-                        :position            :relative
-                        :justify-content     :center
-                        :align-items         :center
-                        :border-bottom-width 1
-                        :margin-horizontal   -15
-                        :border-bottom-color (theme :basic-400)}}
-       [rn/text {:style {:font-size   24
-                         :font-weight "600"
-                         :color       (theme :primary-600)}}
+      [rn/view {:style (style/header)}
+       [rn/text {:style style/header-text-1}
         "Horarios "
-        [rn/text {:style {:color (theme :secondary-600)}}
+        [rn/text {:style style/header-text-2}
          @selected-semester]]])))
 
 (defn semester-picker [semester]
   (let [selected-semester (rf/subscribe [:semester-selected])]
     (fn []
-      [rn/touchable-highlight {:style    {:border-radius 16}
-                               :on-press (when-not (= @selected-semester semester)
-                                           #(rf/dispatch
-                                             [::events/choose-semester semester]))}
-       [rn/view {:style {:padding-horizontal 14
-                         :padding-vertical   6
-                         :border-width       1
-                         :border-color       (if (= @selected-semester semester)
-                                               (theme :secondary-700)
-                                               (theme :primary-700))
-                         :border-radius      12
-                         :background-color   (if (= @selected-semester semester)
-                                               (theme :secondary-100)
-                                               (theme :primary-100))
-                         :justify-content    :center
-                         :align-items        :center}}
-        [rn/view {:style {:height          18
-                          :justify-content :center}}
-         [rn/text {:style {:color       (if (= @selected-semester semester)
-                                          (theme :secondary-700)
-                                          (theme :primary-700))
-                           :font-weight "500"}}
-          semester]]]])))
+      (let [active-button? (= @selected-semester semester)]
+        [rn/touchable-highlight {:style    style/semester-button-radius
+                                 :on-press (when-not (= @selected-semester semester)
+                                             #(rf/dispatch
+                                               [::events/choose-semester semester]))}
+         [rn/view {:style (style/semester-button active-button?)}
+          [rn/view {:style style/semester-button-text-container}
+           [rn/text {:style (style/semester-button-text active-button?)}
+            semester]]]]))))
 
 (defn subtitle-text [text]
-  [rn/text {:style {:font-size   18
-                    :font-weight "500"
-                    :color       (theme :primary-800)}}
+  [rn/text {:style (style/subtitle-text)}
    text])
 
 (defn semester-options []
-  [rn/view {:style {:padding-vertical 2}}
+  [rn/view {:style style/semester-picker}
    [subtitle-text "Semestres"]
    [rn/scroll-view {:horizontal true}
-    [rn/view {:style {:flex-direction     :row
-                      :align-items        :center
-                      :padding-vertical   6
-                      :padding-horizontal 2
-                      :column-gap         12}}
+    [rn/view {:style style/semester-container}
      (map (fn [semester]
-            ^{:key semester}
-            [semester-picker semester])
+            ^{:key semester} [semester-picker semester])
           util/selectable-semesters-range)]]])
 
 (defn major-selector []
   (let [selected-semester (rf/subscribe [:semester-selected])]
     (fn []
-      (let [majors (rf/subscribe [::subs/majors-list-by-semester @selected-semester])]
-        [rn/view {:style {:flex              1
-                          :padding-vertical  2
-                          :margin-horizontal -11}}
-         [rn/view {:style {:margin-horizontal 11}}
+      (let [majors @(rf/subscribe [::subs/majors-list-by-semester @selected-semester])]
+        [rn/view {:style style/majors-container}
+         [rn/view {:style style/major-title-container}
           [subtitle-text "Licenciaturas"]]
-         [rn/scroll-view {:content-container-style {:flex-direction  :row
-                                                    :justify-content :center
-                                                    :flex-wrap       :wrap
-                                                    :column-gap      12
-                                                    :row-gap         16
-                                                    :padding-top     12
-                                                    :padding-bottom  16}}
+         [rn/scroll-view {:content-container-style style/majors-listing-container}
           (map #(with-meta [major-card %] {:key (str %)})
-               @majors)]]))))
+               majors)]]))))
 
 (defn screen* []
-  [rn/view {:style {:position           :relative
-                    :flex               1
-                    :background-color   (theme :basic-100)
-                    :padding-horizontal 15
-                    :row-gap            2}}
+  [rn/view {:style (style/container)}
    [requesting-data]
    [header]
-   [rn/view {:style {:row-gap 6, :flex 1}}
+   [rn/view {:style style/body-container}
     [semester-options]
-    [rn/view {:style {:height            1
-                      :margin-horizontal -15
-                      :background-color  (theme :basic-300)}}]
     [major-selector]]])
 
 (defn screen []

@@ -16,14 +16,16 @@
    {:db (assoc state :app-loading? true
                      :requesting-data? true)
     :fx [[:dispatch [::p/get-majors {:semester       util/current-semester
-                                     :on-success-evt [::request-subjects]}]]]}))
+                                     :on-success-evt [::request-subjects]
+                                     :on-failure-evt [::set-app-loaded]}]]]}))
 
 (rf/reg-event-fx
  ::request-subjects
  (fn [{db :db} _]
    (let [next-evt (if-let [plan (-> db :schedule-shown-content :plan)]
                     [::p/get-subjects {:plan-url       plan
-                                       :on-success-evt [::request-groups]}]
+                                       :on-success-evt [::request-groups]
+                                       :on-failure-evt [::set-app-loaded]}]
                     [::set-app-loaded])]
      {:fx [[:dispatch next-evt]]})))
 
@@ -33,7 +35,8 @@
    (let [app-loaded-evt [::set-app-loaded]
          next-evt       (if-let [subject (-> db :schedule-shown-content :subject)]
                           [::p/get-groups {:subject-url    subject
-                                           :on-success-evt app-loaded-evt}]
+                                           :on-success-evt app-loaded-evt
+                                           :on-failure-evt [::set-app-loaded]}]
                           app-loaded-evt)]
      {:fx [[:dispatch next-evt]]})))
 

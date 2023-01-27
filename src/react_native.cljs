@@ -40,3 +40,8 @@
   "Animated.timing(animation-ref, anim-params).start"
   [animation-ref anim-params]
   (.start (animated-timing animation-ref anim-params)))
+
+;; Theme
+(def appearance rn/Appearance)
+(defn get-color-scheme []
+  (keyword (.getColorScheme appearance)))
