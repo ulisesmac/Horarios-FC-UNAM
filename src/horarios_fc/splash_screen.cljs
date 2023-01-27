@@ -8,7 +8,6 @@
 (rf/reg-event-db
  ::unmount-splash-screen
  (fn [db]
-   (prn "now it's not longer mounted")
    (assoc db :splash-screen-mounted? false)))
 
 (rf/reg-sub
@@ -32,7 +31,6 @@
                                :z-index          1
                                :position         :absolute
                                :width            "100%"
-                               ;:height           "100%"
                                :background-color (theme :primary-600)
                                :justify-content  :center
                                :align-items      :center
