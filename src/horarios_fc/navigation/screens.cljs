@@ -13,20 +13,11 @@
 (defn schedules-stack-screen []
   [nav-utils/create-stack-navigator
    {:native-stack-navigator schedules-stack
-    :screens                [{:props     {:name    :schedule-major
-                                          :options {:header-transparent true
-                                                    :header-title       ""}}
+    :screens                [{:props     {:name :schedule-major}
                               :component pick-major/screen}
-
-                             {:props     {:name    :schedule-plan
-                                          :options {:header-transparent true
-                                                    :header-title       ""}}
+                             {:props     {:name :schedule-plan}
                               :component pick-plan/screen}
-
-
-                             {:props     {:name    :schedule-subject
-                                          :options {:header-transparent true
-                                                    :header-title       ""}}
+                             {:props     {:name :schedule-subject}
                               :component pick-subject/screen}]}])
 
 (defn nav-icon [{:keys [focused active inactive]}]

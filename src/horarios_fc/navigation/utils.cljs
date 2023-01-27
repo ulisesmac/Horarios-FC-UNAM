@@ -1,12 +1,15 @@
 (ns horarios-fc.navigation.utils
   (:require
+   [horarios-fc.colors :refer [theme-color]]
    [re-frame.core :as rf]
    [react-navigation.native :refer [create-navigation-container-ref]]))
 
 (defn create-stack-navigator [{:keys [native-stack-navigator screens]}]
   (let [{stack-screen    :stack/screen
          stack-navigator :stack/navigator} native-stack-navigator]
-    [stack-navigator
+    [stack-navigator {:screen-options {:header-transparent true
+                                       :header-title       ""
+                                       :header-tint-color  (theme-color :basic-1000 :basic-200)}}
      (map (fn [{:keys [props component] :as _screen}]
             ^{:key (str (:name props))}
             [stack-screen props component])

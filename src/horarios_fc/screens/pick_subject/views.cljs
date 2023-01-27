@@ -13,32 +13,25 @@
 
 (defn subject [{:keys [semester-num subject url]}]
   [rn/touchable-highlight
-   {:style          {:border-radius 16}
-    :underlay-color (alpha (theme :primary-100) 80)
+   {:style          style/subject-name-radius
+    :underlay-color (style/subject-name-underlay-color)
     :on-press       #(rf/dispatch [::events/get-group-details semester-num subject url])}
-   [rn/view {:style {:border-radius      16
-                     :padding-vertical   6
-                     :padding-horizontal 12}}
-    [rn/text {:style {:font-size 16
-                      :color     (theme :primary-800)}}
+   [rn/view {:style style/subject-name-container}
+    [rn/text {:style (style/subject-name-text)}
      (str subject)]]])
 
 (defn semester-w-subjects [{:keys [semester-num subjects]}]
   (let [opened? (r/atom false)]
     (fn []
-      [rn/view {:style (when @opened?
-                         {:border-width     0.6
-                          :border-top-width 0
-                          :border-radius    22
-                          :border-color     (theme :primary-500)})}
+      [rn/view {:style (when @opened? (style/subject-listing-container))}
        [rn/touchable-highlight {:style    {:border-radius 16}
                                 :on-press #(swap! opened? not)}
-        [rn/view {:style (merge style/semester-num
+        [rn/view {:style (merge (style/semester-num)
                                 (when @opened? style/semester-num-open))}
          [rn/view {:style style/semester-num-content}
-          [rn/text {:style style/semester-num-text}
+          [rn/text {:style (style/semester-num-text)}
            (str semester-num)]
-          [rn/text {:style (assoc style/semester-num-text :font-size 22)}
+          [rn/text {:style (assoc (style/semester-num-text) :font-size 22)}
            (if @opened? "-" "+")]]]]
        (when @opened?
          [rn/view {:style {:row-gap 2, :padding 6}}
@@ -57,35 +50,35 @@
 
 (defn group-header [{:keys [group-id places students description]}]
   [rn/view
-   [rn/view {:style style/group-header}
-    [rn/text {:style style/group-header-text}
+   [rn/view {:style (style/group-header)}
+    [rn/text {:style (style/group-header-text)}
      (str "Grupo " group-id)]
     (let [places-text   (when places (str places " lugares"))
           students-text (when students (if (= 1 students)
                                          "1 alumno"
                                          (str students " alumnos")))]
-      [rn/text {:style style/group-header-text}
+      [rn/text {:style (style/group-header-text)}
        (if (and places-text students-text)
          (str places-text " / " students-text)
          (or places-text students-text))])]
    (when description
-     [rn/view {:style style/group-header-description}
-      [rn/text {:style style/group-header-description-text}
+     [rn/view {:style (style/group-header-description)}
+      [rn/text {:style (style/group-header-description-text)}
        (str "📖 " (string/capitalize description))]])])
 
 (defn- person-info [{:keys [person-name role]}]
-  [rn/view {:style style/person-data}
+  [rn/view {:style (style/person-data)}
    [rn/text
     (if person-name
-      [rn/text {:style style/person-name}
+      [rn/text {:style (style/person-name)}
        (str person-name ", ")]
-      [rn/text {:style style/unassigned-person-name}
+      [rn/text {:style (style/unassigned-person-name)}
        "Sin asignar, "])
-    [rn/text {:style style/person-role}
+    [rn/text {:style (style/person-role)}
      (string/replace role #"I" "")]]])
 
 (defn- schedule-info [{:keys [days hours]}]
-  [rn/view {:style style/schedule}
+  [rn/view {:style (style/schedule)}
    (when days
      (let [days-str (string/capitalize (if (some #(= "a" %) days)
                                          (apply str (interpose " " days))
@@ -96,7 +89,7 @@
                                            (string/replace-first $ #" ," " y ")
                                            (string/reverse $))))]
        [rn/view
-        [rn/text {:style style/schedule-days}
+        [rn/text {:style (style/schedule-days)}
          days-str]]))
    (when hours
      (let [emoji-hour-str (str (hour->emoji-clock (first hours)) " ")
@@ -106,16 +99,16 @@
                                        (str % ":00")))
                                (interpose " - ")
                                (apply str))]
-       [rn/view {:style style/schedule-hours-container}
+       [rn/view {:style (style/schedule-hours-container)}
         [rn/text {:style style/schedule-hours-text-size}
          emoji-hour-str]
-        [rn/text {:style style/schedule-hours-text}
+        [rn/text {:style (style/schedule-hours-text)}
          hour-range-str]]))])
 
 (defn- room-info [{:keys [room]}]
-  [rn/view {:style style/room-container}
-   [rn/view {:style style/room}
-    [rn/text {:style style/room-text}
+  [rn/view {:style (style/room-container)}
+   [rn/view {:style (style/room)}
+    [rn/text {:style (style/room-text)}
      (str "🏫 " room)]]])
 
 (defn extra-schedule-info [{:keys [days hours classroom]}]
@@ -150,8 +143,8 @@
    [rn/touchable-highlight {:style          style/presentation-button-border
                             :active-opacity 0.6
                             :on-press       #(prn presentation-url)}
-    [rn/view {:style style/presentation-button}
-     [rn/text {:style style/presentation-button-text}
+    [rn/view {:style (style/presentation-button)}
+     [rn/text {:style (style/presentation-button-text)}
       "📃 Presentación"]]]])
 
 (defn group-details [{:keys [group-id places students presentation-url description] :as group-data}]
@@ -160,7 +153,7 @@
                   :places      places
                   :students    students
                   :description description}]
-   [rn/view {:style style/group-body}
+   [rn/view {:style (style/group-body)}
     (map (fn [[role {:keys [person-name days hours classroom extra] :as _details}]]
            ^{:key (str group-id person-name role days hours)}
            [group-info {:group-id    group-id
@@ -176,11 +169,11 @@
      [presentation-button {:presentation-url presentation-url}])])
 
 (defn subject-title [{:keys [semester-num subject]}]
-  [rn/view {:style style/subject-container}
+  [rn/view {:style (style/subject-container)}
    [rn/text {:style style/subject-text}
-    [rn/text {:style style/subject-semester-text}
+    [rn/text {:style (style/subject-semester-text)}
      (str semester-num ", ")]
-    [rn/text {:style style/subject-text-bold}
+    [rn/text {:style (style/subject-text-bold)}
      (str subject)]]])
 
 (defn top-panel [{:keys [flex-size]}]
@@ -219,11 +212,11 @@
 
 (defn divider [{:keys [on-press-move move-text]}]
   [rn/view {:style style/divider-container}
-   [rn/view {:style style/gray-bar}]
+   [rn/view {:style (style/green-bar)}]
    [rn/touchable-highlight {:style    style/move-button-border
                             :on-press on-press-move}
-    [rn/view {:style style/move-button}
-     [rn/text {:style style/move-button-text}
+    [rn/view {:style (style/move-button)}
+     [rn/text {:style (style/move-button-text)}
       move-text]]]])
 
 (defn screen* []
@@ -240,7 +233,7 @@
                            (rn/start-animated-timing move-anim {:toValue         1
                                                                 :duration        350
                                                                 :useNativeDriver false}))]
-        [rn/view {:style style/container}
+        [rn/view {:style (style/container)}
          [requesting-data]
          [top-panel {:flex-size move-anim}]
          [divider {:on-press-move #(if @bigger-top? (make-smaller) (make-bigger))

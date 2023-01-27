@@ -1,161 +1,185 @@
 (ns horarios-fc.screens.pick-subject.style
   (:require
-   [horarios-fc.colors :refer [alpha theme]]))
+   [horarios-fc.colors :refer [alpha theme theme-color]]))
 
-(def container
+(defn container []
   {:position           :relative
    :flex               1
    :padding-horizontal 16
    :justify-content    :center
    :row-gap            6
-   :background-color   (theme :basic-100)})
+   :background-color   (theme-color :basic-100 :basic-1000)})
 
 ;; Divider
 (def divider-container {:position           :relative
                         :align-items        :flex-end
                         :padding-horizontal 8})
 
-(def gray-bar {:position         :absolute
-               :top              "50%"
-               :left             0
-               :right            0
-               :background-color (theme :secondary-800)
-               :height           1})
+(defn green-bar []
+  {:position         :absolute
+   :top              "50%"
+   :left             0
+   :right            0
+   :background-color (theme-color :secondary-800 :secondary-600)
+   :height           1})
 
 (def move-button-border {:border-radius 12})
-(def move-button (merge move-button-border
-                        {:background-color   (theme :secondary-700)
-                         :justify-content    :center
-                         :align-items        :center
-                         :padding-vertical   8
-                         :padding-horizontal 18}))
-(def move-button-text {:color       (theme :basic-100)
-                       :font-weight "600"
-                       :z-index     10})
+(defn move-button []
+  (merge move-button-border
+         {:background-color   (theme-color :secondary-700 :secondary-800)
+          :justify-content    :center
+          :align-items        :center
+          :padding-vertical   8
+          :padding-horizontal 18}))
+(defn move-button-text []
+  {:color       (theme-color :basic-100 :basic-200)
+   :font-weight "600"
+   :z-index     10})
 
 ;; TOP
 (defn instructions []
   {:text-align  :center
    :font-size   26
    :font-weight "600"
-   :color       (theme :secondary-600)})
+   :color       (theme-color :secondary-700 :secondary-500)})
 
-(def subject-container {:position            :relative
-                        :height              58
-                        :padding-vertical    6
-                        :padding-horizontal  43
-                        :margin-horizontal   -15
-                        :justify-content     :center
-                        :border-bottom-width 1
-                        :border-bottom-color (theme :basic-300)})
-(def subject-text {:font-size  18
-                   :text-align :center})
-(def subject-semester-text {:color       (theme :secondary-700)
-                            :font-weight "500"})
-(def subject-text-bold {:color       (theme :primary-700)
-                        :font-weight "600"})
+(defn subject-container []
+  {:position            :relative
+   :height              58
+   :padding-vertical    6
+   :padding-horizontal  43
+   :margin-horizontal   -15
+   :justify-content     :center
+   :border-bottom-width 1
+   :border-bottom-color (theme-color :basic-300 :basic-700)})
+
+(def subject-text {:font-size 18, :text-align :center})
+
+(defn subject-semester-text []
+  {:color       (theme-color :secondary-700 :secondary-600)
+   :font-weight "500"})
+(defn subject-text-bold []
+  {:color       (theme-color :primary-700 :primary-600)
+   :font-weight "600"})
 
 (def groups-list {:row-gap            24
                   :padding-bottom     12
                   :padding-horizontal 4})
 
 ;; TOP -> group details
-(def group-header {:flex-direction          :row
-                   :padding-vertical        8
-                   :padding-horizontal      14
-                   :background-color        (theme :primary-700)
-                   :align-items             :center
-                   :justify-content         :space-between
-                   :border-top-left-radius  14
-                   :border-top-right-radius 14})
+(defn group-header []
+  {:flex-direction          :row
+   :padding-vertical        8
+   :padding-horizontal      14
+   :background-color        (theme-color :primary-700 :primary-1100)
+   :align-items             :center
+   :justify-content         :space-between
+   :border-top-left-radius  14
+   :border-top-right-radius 14})
 
-(def group-header-text {:color       (theme :basic-100)
-                        :font-weight "700"})
+(defn group-header-text []
+  {:color       (theme-color :basic-100 :basic-200)
+   :font-weight "700"})
 
-(def group-header-description {:padding-vertical   8
-                               :padding-horizontal 14
-                               :background-color   (theme :primary-300)})
+(defn group-header-description []
+  {:padding-vertical   8
+   :padding-horizontal 14
+   :background-color   (theme-color :primary-300 :primary-1200)})
 
-(def group-header-description-text {:color      (theme :basic-1000)
-                                    :font-style :italic})
+(defn group-header-description-text []
+  {:color      (theme-color :basic-1000 :primary-400)
+   :font-style :italic})
 
-(def group-body {:flex                       1
-                 :row-gap                    18
-                 :padding-top                6
-                 :padding-bottom             28
-                 :padding-horizontal         8
-                 :border-bottom-right-radius 14
-                 :border-bottom-left-radius  14
-                 :background-color           (alpha (theme :primary-100) 50)
-                 :border-width               0.5
-                 :border-top-width           0
-                 :border-color               (theme :primary-500)})
+(defn group-body []
+  {:flex                       1
+   :row-gap                    18
+   :padding-top                6
+   :padding-bottom             28
+   :padding-horizontal         8
+   :border-bottom-right-radius 14
+   :border-bottom-left-radius  14
+   :background-color           (alpha (theme-color :primary-100 :primary-1200) 50)
+   :border-width               0.5
+   :border-top-width           0
+   :border-color               (theme-color :primary-500 :primary-1000)})
 ;;
 (def presentation {:margin-top         -18
                    :flex-direction     :row
                    :justify-content    :flex-end
                    :padding-horizontal 12})
 (def presentation-button-border {:border-radius 16})
-(def presentation-button
+(defn presentation-button []
   (merge presentation-button-border
          {:padding-horizontal 18
           :padding-vertical   8
           :border-radius      16
-          :background-color   (theme :primary-500)}))
-(def presentation-button-text {:font-weight "500"
-                               :color       (theme :basic-100)})
+          :background-color   (theme-color :primary-500 :primary-800)}))
+(defn presentation-button-text []
+  {:font-weight "500"
+   :color       (theme-color :basic-100 :basic-200)})
 ;;
-(def person-data {:justify-content    :center
-                  :padding-vertical   6
-                  :padding-horizontal 12
-                  :border-radius      12
-                  :background-color   (alpha (theme :primary-300) 40)})
+(defn person-data []
+  {:justify-content    :center
+   :padding-vertical   6
+   :padding-horizontal 12
+   :border-radius      12
+   :background-color   (alpha (theme-color :primary-300 :primary-1000) 40)})
 
-(def person-name {:color       (theme :basic-1000)
-                  :font-weight "600"})
-(def unassigned-person-name {:color       (theme :basic-1000)
-                             :font-weight "600"})
-(def person-role {:color       (theme :secondary-600)
-                  :font-weight "600"})
+(defn person-name []
+  {:color       (theme-color :basic-1000 :primary-200)
+   :font-weight "600"})
+(defn unassigned-person-name []
+  {:color       (theme-color :basic-1000 :basic-300)
+   :font-weight "600"})
+(defn person-role []
+  {:color       (theme-color :secondary-600 :secondary-500)
+   :font-weight "600"})
 ;;
-(def schedule {:flex-direction   :row
-               :justify-content  :space-between
-               :align-items      :center
-               :padding-left     12
-               :border-radius    12
-               :background-color (alpha (theme :primary-100) 80)})
+(defn schedule []
+  {:flex-direction   :row
+   :justify-content  :space-between
+   :align-items      :center
+   :padding-left     12
+   :border-radius    12
+   :background-color (alpha (theme-color :primary-100 :primary-1100) 80)})
 
-(def schedule-days {:color       (theme :basic-800)
-                    :font-weight "500"})
+(defn schedule-days []
+  {:color       (theme-color :basic-800 :basic-200)
+   :font-weight "500"})
 
-(def schedule-hours-container {:flex-direction     :row
-                               :justify-content    :center
-                               :align-items        :center
-                               :padding-vertical   4
-                               :padding-horizontal 8
-                               :border-radius      16
-                               :border-width       1
-                               :border-color       (theme :primary-900)})
+(defn schedule-hours-container []
+  {:flex-direction     :row
+   :justify-content    :center
+   :align-items        :center
+   :padding-vertical   4
+   :padding-horizontal 8
+   :border-radius      16
+   :border-width       1
+   :border-color       (theme-color :primary-900 :primary-500)})
 
 (def schedule-hours-text-size {:font-size 18})
 
-(def schedule-hours-text {:color       (theme :primary-900)
-                          :text-align  :center
-                          :font-weight "600"})
+(defn schedule-hours-text []
+  {:color       (theme-color :primary-900 :basic-200)
+   :text-align  :center
+   :font-weight "600"})
 ;;
-(def room-container {:justify-content  :center
-                     :align-items      :flex-start
-                     :border-radius    12
-                     :background-color (alpha (theme :primary-100) 60)})
-(def room {:align-self       :flex-start
-           :border-width     1
-           :padding-vertical 4
-           :padding          12
-           :border-radius    12
-           :border-color     (theme :primary-900)})
+(defn room-container []
+  {:justify-content  :center
+   :align-items      :flex-start
+   :border-radius    12
+   :background-color (alpha (theme-color :primary-100 :primary-1200) 60)})
+(defn room []
+  {:align-self       :flex-start
+   :border-width     1
+   :padding-vertical 4
+   :padding          12
+   :border-radius    12
+   :border-color     (theme-color :primary-900 :primary-500)})
 
-(def room-text {:color       (theme :primary-900)
-                :font-weight "600"})
+(defn room-text []
+  {:color       (theme-color :primary-900 :basic-200)
+   :font-weight "600"})
 
 ;; Bottom
 (def bottom-container {:row-gap            20
@@ -163,10 +187,11 @@
                        :padding-horizontal 8
                        :justify-content    :center})
 
-(def semester-num {:background-color   (theme :primary-600)
-                   :border-radius      16
-                   :padding-vertical   8
-                   :padding-horizontal 16})
+(defn semester-num []
+  {:background-color   (theme-color :primary-600 :primary-1000)
+   :border-radius      16
+   :padding-vertical   8
+   :padding-horizontal 16})
 
 (def semester-num-open {:border-bottom-right-radius 0
                         :border-bottom-left-radius  0})
@@ -175,6 +200,25 @@
                            :justify-content :space-between
                            :align-items     :center})
 
-(def semester-num-text {:font-size   16
-                        :font-weight "600"
-                        :color       (theme :basic-100)})
+(defn semester-num-text []
+  {:font-size   16
+   :font-weight "600"
+   :color       (theme-color :basic-100 :basic-200)})
+
+(defn subject-listing-container []
+  {:border-width     0.6
+   :border-top-width 0
+   :border-radius    22
+   :border-color     (theme-color :primary-500 :primary-800)})
+
+(def subject-name-radius {:border-radius 16})
+
+(defn subject-name-underlay-color []
+  (alpha (theme-color :primary-100 :primary-1000) 80) )
+
+(def subject-name-container {:border-radius      16
+                             :padding-vertical   8
+                             :padding-horizontal 12})
+(defn subject-name-text []
+  {:font-size 16
+   :color     (theme-color :primary-800 :primary-400)})
