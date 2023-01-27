@@ -1,8 +1,7 @@
 (ns horarios-fc.screens.pick-subject.views
   (:require
-   ["react" :refer [useRef useState]]
+   ["react" :refer [useRef]]
    [clojure.string :as string]
-   [horarios-fc.colors :refer [alpha theme]]
    [horarios-fc.components.requesting-data :refer [requesting-data]]
    [horarios-fc.screens.pick-subject.events :as events]
    [horarios-fc.screens.pick-subject.style :as style]
