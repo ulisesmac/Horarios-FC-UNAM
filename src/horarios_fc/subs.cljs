@@ -5,7 +5,7 @@
 (rf/reg-sub
  :app-loading?
  (fn [db _]
-   (:app-loading? db)))
+   (:app-loading? db true)))
 
 (rf/reg-sub
  :schedule

@@ -26,8 +26,8 @@
         bottom-style (.interpolate anim #js{:inputRange  #js[0 100]
                                             :outputRange #js["0%" "100%"]})
         _            (when app-ready?
-                       (js/setTimeout start-anim! 50)
-                       (js/setTimeout #(rf/dispatch [::unmount-splash-screen]) 5000))]
+                       (js/setTimeout start-anim! 500)
+                       (js/setTimeout #(rf/dispatch [::unmount-splash-screen]) 7000))]
     [rn/animated-view {:style {:flex             1
                                :z-index          1
                                :position         :absolute
