@@ -82,12 +82,17 @@
    (assoc db :theme-variant theme-variant)))
 
 (rf/reg-sub
- :theme
+ :theme-raw
  (fn [db _]
-   (let [theme-selected (get db :theme-variant :auto)]
-     (if (= theme-selected :auto)
-       (rn/get-color-scheme)
-       theme-selected))))
+   (get db :theme-variant :auto)))
+
+(rf/reg-sub
+ :theme
+ :<- [:theme-raw]
+ (fn [theme-raw]
+   (if (= theme-raw :auto)
+     (rn/get-color-scheme)
+     theme-raw)))
 
 (defn theme-color
   ([light-color]

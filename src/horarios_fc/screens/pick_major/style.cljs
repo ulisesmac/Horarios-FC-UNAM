@@ -81,12 +81,10 @@
 
 (defn major []
   {:flex-direction     :row
-   :background-color   (theme-color
-                        (alpha (theme :primary-100) 30)
-                        :primary-1200)
+   :background-color   (alpha (theme-color :primary-100 :primary-1000) 30)
    :border-radius      16
    :border-width       1
-   :border-color       (theme-color :primary-800 :primary-600)
+   :border-color       (theme-color :primary-800 :primary-700)
    :width              185
    :height             108
    :padding-vertical   12

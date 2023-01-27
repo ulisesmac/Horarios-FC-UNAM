@@ -11,10 +11,11 @@
 (defonce bottom-tabs (create-bottom-tab-navigator))
 
 (defn app-navigator []
-  (let [new-color-scheme (rn/use-color-scheme)
+  (let [new-color-scheme    (rn/use-color-scheme)
+        stored-theme-scheme @(rf/subscribe [:theme])
         {tab-screen :tab/screen, tab-navigator :tab/navigator} bottom-tabs]
     ;; Theme update
-    (when (not= new-color-scheme @(rf/subscribe [:theme]))
+    (when (and (= stored-theme-scheme :auto))
       (rf/dispatch-sync [:set-theme (keyword new-color-scheme)]))
     ;;
     [navigation-container {:ref             nav-utils/navigation-ref

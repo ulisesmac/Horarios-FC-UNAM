@@ -5,6 +5,8 @@
    [horarios-fc.screens.pick-major.views :as pick-major]
    [horarios-fc.screens.pick-plan.views :as pick-plan]
    [horarios-fc.screens.pick-subject.views :as pick-subject]
+   [horarios-fc.screens.settings.views :as settings]
+   [horarios-fc.screens.my-schedule.views :as my-schedule]
    [react-native :as rn]
    [react-navigation.native-stack :refer [create-native-stack-navigator]]
    [reagent.core :as r]))
@@ -47,4 +49,8 @@
    {:props     {:name    :my-schedule
                 :options {:title        "Mi horario"
                           :tab-bar-icon my-schedule-icon}}
-    :component pick-major/screen}])
+    :component my-schedule/screen}
+   {:props     {:name    :settings
+                :options {:title        "Configuración"
+                          :tab-bar-icon my-schedule-icon}}
+    :component settings/screen}])

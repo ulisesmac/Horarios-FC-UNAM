@@ -12,4 +12,4 @@
                           :right    12
                           :top      9}}
          [rn/activity-indicator {:size  :large
-                                 :color (theme :secondary-400)}]]))))
+                                 :color (theme :success-500)}]]))))
