@@ -1,4 +1,4 @@
-package com.horariosfcunam;
+package com.flyhighware.cienciasnet;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

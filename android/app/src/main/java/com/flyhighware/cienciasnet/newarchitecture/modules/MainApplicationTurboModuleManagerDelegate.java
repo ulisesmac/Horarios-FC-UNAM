@@ -1,4 +1,4 @@
-package com.horariosfcunam.newarchitecture.modules;
+package com.flyhighware.cienciasnet.newarchitecture.modules;
 
 import com.facebook.jni.HybridData;
 import com.facebook.react.ReactPackage;
