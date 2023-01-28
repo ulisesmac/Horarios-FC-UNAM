@@ -6,6 +6,8 @@
 (def theme
   {:primary-100   "#D4F0FE"
    :primary-200   "#ABDDFE"
+
+
    :primary-300   "#80C7FE"
    :primary-400   "#61B1FD"
    :primary-500   "#2D8EFD"
@@ -79,6 +81,8 @@
 (rf/reg-event-db
  :set-theme
  (fn [db [_ theme-variant]]
+
+
    (assoc db :theme-variant theme-variant)))
 
 (rf/reg-sub
