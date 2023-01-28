@@ -7,13 +7,13 @@
    :flex               1
    :padding-horizontal 16
    :justify-content    :center
-   :row-gap            6
    :background-color   (theme-color :basic-100 :basic-1000)})
 
 ;; Divider
 (def divider-container {:position           :relative
                         :align-items        :flex-end
-                        :padding-horizontal 8})
+                        :padding-horizontal 8
+                        :margin-vertical    4})
 
 (defn green-bar []
   {:position         :absolute
@@ -217,7 +217,7 @@
   (alpha (theme-color :primary-100 :primary-1000) 80))
 
 (def subject-name-container {:border-radius      16
-                             :padding-vertical   8
+                             :padding-vertical   10
                              :padding-horizontal 12})
 (defn subject-name-text []
   {:font-size 16
