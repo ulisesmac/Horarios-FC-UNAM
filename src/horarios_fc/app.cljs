@@ -17,7 +17,8 @@
       [rn/view {:style {:flex 1, :position :relative}}
        (when @mounted-splash?
          [:f> splash @loading?])
-       [:f> nav/app-navigator]])))
+       (when-not @loading?
+         [:f> nav/app-navigator])])))
 
 (defn ^:dev/after-load start []
   (rf/clear-subscription-cache!)

@@ -7,14 +7,15 @@
 (rf/reg-event-fx
  :initialize-db
  (fn [_ _]
-   {:db        {:app-loading? true, :requesting-data? true}
+   {:db        {:app-loading? true, :requesting-data? true, :splash-screen-mounted? true}
     :read-data [:db-state #(rf/dispatch [::load-app-state %])]}))
 
 (rf/reg-event-fx
  ::load-app-state
  (fn [_ [_ state]]
    {:db (assoc state :app-loading? true
-                     :requesting-data? true)
+                     :requesting-data? true
+                     :splash-screen-mounted? true)
     :fx [[:dispatch [::p/get-majors {:semester       util/current-semester
                                      :on-success-evt [::request-subjects]
                                      :on-failure-evt [::set-app-loaded]}]]]}))
@@ -45,7 +46,8 @@
  (fn [db _]
    (-> db
        (assoc :app-loading? false
-              :requesting-data? false)
+              :requesting-data? false
+              :splash-screen-mounted? true)
        (assoc-in [:schedule-shown-content :semester] util/current-semester))))
 
 (rf/reg-event-fx
