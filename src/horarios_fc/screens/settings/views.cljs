@@ -66,7 +66,7 @@
         [rn/view
          [rn/text {:style {:color       (theme-color :secondary-600 :secondary-500)
                            :font-weight "600"}}
-          "Email de contact: "]
+          "Email de contacto: "]
          [rn/text {:style      {:color (theme-color :basic-1100 :basic-200)}
                    :selectable true}
           "flyhighware@gmail.com"]]]])))
