@@ -47,7 +47,29 @@
                         :on-press #(rf/dispatch [:set-theme :light])}]
          [theme-button {:text     "🌙 Obscuro"
                         :disabled (= @current-theme :dark)
-                        :on-press #(rf/dispatch [:set-theme :dark])}]]]])))
+                        :on-press #(rf/dispatch [:set-theme :dark])}]]]
+       ;;
+       [rn/view {:style {:row-gap 8}}
+        [rn/text {:style {:margin-top 12
+                          :font-size  18
+                          :color      (theme-color :basic-1000 :basic-200)
+                          :text-align :center}}
+         "Extra"]
+        [rn/view
+         [rn/text {:style {:color       (theme-color :secondary-600 :secondary-500)
+                           :font-weight "600"}}
+          "Github repo: "]
+         [rn/text {:style      {:color (theme-color :basic-1100 :basic-200)}
+                   :selectable true}
+          "https://github.com/ulisesmac/Horarios-FC-UNAM"]]
+
+        [rn/view
+         [rn/text {:style {:color       (theme-color :secondary-600 :secondary-500)
+                           :font-weight "600"}}
+          "Email de contact: "]
+         [rn/text {:style      {:color (theme-color :basic-1100 :basic-200)}
+                   :selectable true}
+          "flyhighware@gmail.com"]]]])))
 
 (defn screen []
   (r/as-element [screen*]))
