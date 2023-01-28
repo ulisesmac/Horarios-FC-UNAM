@@ -102,6 +102,8 @@
   ([light-color]
    (theme-color light-color light-color))
   ([light-color dark-color]
+
+
    (let [theme-selected @(rf/subscribe [:theme])
          actual-color   (if (= theme-selected :dark)
                           dark-color
