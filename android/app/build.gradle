@@ -117,6 +117,14 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            if (project.hasProperty('CIENCIASNET_UPLOAD_STORE_FILE')) {
+                storeFile file(CIENCIASNET_UPLOAD_STORE_FILE)
+                storePassword CIENCIASNET_UPLOAD_STORE_PASSWORD
+                keyAlias CIENCIASNET_UPLOAD_KEY_ALIAS
+                keyPassword CIENCIASNET_UPLOAD_KEY_PASSWORD
+            }
+        }
     }
     buildTypes {
         debug {
