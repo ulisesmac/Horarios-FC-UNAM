@@ -23,7 +23,8 @@
                  {}))))
 
 (defn- parse-majors-w-plans [raw-response]
-  (let [parsed-response (parse-xml raw-response)
+  (let [_               (def --rr raw-response)
+        parsed-response (parse-xml raw-response)
         content         (get-in parsed-response content-path)
         majors          (:h2 content)
         plans           (map #(->plans-map (:a %))
