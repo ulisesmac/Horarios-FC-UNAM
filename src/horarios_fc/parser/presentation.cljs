@@ -28,16 +28,7 @@
      (->> html-presentation
           (mapcat (fn [html-page]
                     (get-in html-page [:div 0 :div 0 :div])))
-          (map (fn [html-node]
-                 (update-vals html-node (fn [node]
-                                          (if (:attr/text (first node))
-                                            (:attr/text (first node))
-                                            (update-vals (first node) (fn [node]
-                                                                        (if (:attr/text (first node))
-                                                                          (:attr/text (first node))
-                                                                          (first node)
-                                                                          ;(update-vals (first node) esta-funcion)
-                                                                          ))))))))
-          )
-     )
+          (clojure.walk/postwalk #(if (and (map? %) (:attr/text %))
+                                    {:text (:attr/text %)}
+                                    %))))
 
