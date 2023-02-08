@@ -2,6 +2,7 @@
   (:require
    [horarios-fc.parser.groups :as pg]
    [horarios-fc.parser.majors :as pm]
+   [horarios-fc.parser.presentation :as pp]
    [horarios-fc.parser.subjects :as ps]
    [re-frame.core :as rf]))
 
@@ -79,3 +80,18 @@
               (assoc-in (conj path :data) response)
               (assoc-in (conj path :date) (js/Date.)))
       :fx [[:dispatch on-success-evt]]})))
+
+(rf/reg-event-fx
+ ::get-presentation
+ (fn [_ [_ {:keys [presentation-url on-success-evt on-failure-evt]}]]
+   {:http-request {:method     :GET
+                   :url        (pp/create-url presentation-url)
+                   :on-success #(rf/dispatch
+                                 [::store-presentation on-success-evt (pp/parse-presentation %)])
+                   :on-failure #(rf/dispatch on-failure-evt)}}))
+
+(rf/reg-event-fx
+ ::store-presentation
+ (fn [{db :db} [_ on-success-evt parsed-presentation]]
+   {:db (assoc db :shown-presentation parsed-presentation)
+    :fx [[:dispatch on-success-evt]]}))
