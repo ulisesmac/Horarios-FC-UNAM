@@ -9,6 +9,7 @@
    [horarios-fc.screens.settings.views :as settings]
    [react-native :as rn]
    [react-navigation.native-stack :refer [create-native-stack-navigator]]
+   [horarios-fc.screens.presentation.views :as presentation]
    [reagent.core :as r]))
 
 (defonce schedules-stack (create-native-stack-navigator))
@@ -20,7 +21,9 @@
                              {:props     {:name :schedule-plan}
                               :component pick-plan/screen}
                              {:props     {:name :schedule-subject}
-                              :component pick-subject/screen}]}])
+                              :component pick-subject/screen}
+                             {:props     {:name :schedule-presentation}
+                              :component presentation/screen}]}])
 
 (defn nav-icon [{:keys [focused active inactive]}]
   [rn/view {:style {:margin-bottom -4}}

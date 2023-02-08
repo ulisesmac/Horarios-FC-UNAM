@@ -139,9 +139,10 @@
 
 (defn presentation-button [{:keys [presentation-url]}]
   [rn/view {:style style/presentation}
-   [rn/touchable-highlight {:style          style/presentation-button-border
-                            :active-opacity 0.6
-                            :on-press       #(prn presentation-url)}
+   [rn/touchable-highlight
+    {:style          style/presentation-button-border
+     :active-opacity 0.6
+     :on-press       #(rf/dispatch [::events/request-presentation presentation-url])}
     [rn/view {:style (style/presentation-button)}
      [rn/text {:style (style/presentation-button-text)}
       "📃 Presentación"]]]])

@@ -12,3 +12,16 @@
             (assoc :requesting-data? true))
     :fx [[:dispatch [::p/get-groups {:subject-url    subject-url
                                      :on-success-evt [:stop-requesting-data]}]]]}))
+
+(rf/reg-event-fx
+ ::request-presentation
+ (fn [{db :db} [_ presentation-url]]
+   {:db (assoc db :requesting-data? true)
+    :fx [[:dispatch [::p/get-presentation {:presentation-url presentation-url
+                                           :on-success-evt   [::navigate-to-presentation]}]]]}))
+
+(rf/reg-event-fx
+ ::navigate-to-presentation
+ (fn [{db :db} _]
+   {:db       (assoc db :requesting-data? false)
+    :navigate {:route-name :schedule-presentation}}))
