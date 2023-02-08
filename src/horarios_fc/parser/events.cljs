@@ -11,8 +11,11 @@
 (rf/reg-event-fx
  ::get-majors
  (fn [{db :db} [_ {:keys [semester on-success-evt on-failure-evt]}]]
-   (let [stored-time (get-in db [:schedule semester :date])]
-     (if (< stored-time (today-at-6))
+   (let [stored-time (get-in db [:schedule semester :date])
+         stored-data (get-in db [:schedule semester :data])]
+     ;; TODO: replicate in other places
+     (if (or (empty? stored-data)
+             (< stored-time (today-at-6)))
        {:http-request {:method     :GET
                        :url        (pm/create-url semester)
                        :on-success #(rf/dispatch [::store-majors
