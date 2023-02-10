@@ -1,16 +1,14 @@
 (ns horarios-fc.parser.presentation
   (:require
-   [horarios-fc.parser.utils :refer [parse-xml] :as p]
-   [horarios-fc.networking :as n]
-   [clojure.walk :as walk]
-   [clojure.string :as string]))
-
+    [clojure.string]
+    [clojure.walk :as walk]
+    [horarios-fc.networking :as n]
+    [horarios-fc.parser.utils :refer [parse-xml] :as p]))
 
 (def test-url "/docencia/horarios/presentacion/342743")
 
 (defn parse-presentation [raw-response]
-  (let [_            (def --rr raw-response)
-        parsed-html  (-> (p/xml-parser {:preserveOrder true})
+  (let [parsed-html  (-> (p/xml-parser {:preserveOrder true})
                          (.parse raw-response)
                          (js/JSON.stringify)
                          (clojure.string/replace #":@" "attributes")
@@ -22,15 +20,15 @@
          (drop 6)
          (walk/postwalk #(if (and (map? %) (:attr/text %))
                            {:text (:attr/text %)}
-                           %)))))
-
-#_(vec
-   (filter (fn [{:keys [attributes]}]
-             (some->> attributes :attr/title (re-find #"Page \d+")))
-           content))
-;(mapcat #(get-in % [:div 0 :div 0 :div]))
+                           %))
+         (clojure.walk/postwalk #(if (map? %)
+                                   (into [] cat %)
+                                   %))
+         (clojure.walk/postwalk #(if (and
+                                       (vector? %)
+                                       (< (count %) 2))
+                                   (vec (mapcat identity %))
+                                   %)))))
 
 (defn create-url [url]
   (str n/domain url))
-
-
