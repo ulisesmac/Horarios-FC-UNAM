@@ -49,7 +49,8 @@
                     :color           (colors/theme-color :basic-800)}}
    children])
 (defn span [children]
-  children)
+  [rn/text
+   " " children " "])
 
 (defn strong [children]
   [rn/text {:style {:font-weight "600"
@@ -76,24 +77,27 @@
 
 (defn li
   ([idx [_fragment-kw child-text & children]]
-   (let [li-parent [rn/view {:style nil}
-                    [rn/text {:style {:font-size 14
+   (let [li-parent [rn/view
+                    [rn/text {:style {:font-size   14
                                       :line-height 20
-                                      :color     (colors/theme-color :basic-800)}}
+                                      :color       (colors/theme-color :basic-800)}}
                      (str idx ". ")
                      child-text]]]
      (into li-parent children)))
-  ;;
-  ([children]
-   [rn/view
-    [rn/text
-     [rn/view {:style {:height           7
-                       :width            7
-                       :border-radius    20
-                       :background-color (colors/theme-color :primary-500)}}
-      ;; TODO: remove and check paddings
-      [rn/text " "]]
-     children]]))
+  ([[_fragment-kw child-text & children]]
+   (let [li-parent [rn/view
+                    [rn/view {:style {:flex-direction :row
+                                      :column-gap     6}}
+                     [rn/view {:style {:margin-top       9
+                                       :height           5
+                                       :width            5
+                                       :border-radius    4
+                                       :background-color (colors/theme-color :primary-700)}}]
+                     [rn/text {:style {:font-size   14
+                                       :line-height 20
+                                       :color       (colors/theme-color :basic-800)}}
+                      child-text]]]]
+     (into li-parent children))))
 
 (defn ol [[_kw & children]]
   [rn/view {:style {:padding-left   12
@@ -103,6 +107,16 @@
           ^{:key (str idx child)}
           [li idx child])
         (rest (range))
+        children)])
+
+(defn ul [[_kw & children]]
+  [rn/view {:style {:padding-left   12
+                    :padding-top    4
+                    :padding-bottom 6}}
+   (map (fn [idx [_kw-li child]]
+          ^{:key (str idx child)}
+          [li child])
+        (range)
         children)])
 
 (defn hr []
@@ -177,8 +191,11 @@
        (= (first node) :h4) [h4 (second node)]
        (= (first node) :h5) [h5 (second node)]
        (= (first node) :hr) [hr]
-       (= (first node) :li) [:li (second node)]
+
+       (= (first node) :ul) [ul (second node)]
        (= (first node) :ol) [ol (second node)]
+       (= (first node) :li) [:li (second node)]
+
        (= (first node) :p) [p (second node)]
        (= (first node) :span) [span (second node)]
        (= (first node) :strong) [strong (second node)]
@@ -189,7 +206,6 @@
        (= (first node) :td) [td (second node)]
 
        (= (first node) :text) [rn/text (second node)]
-       (= (first node) :ul) [rn/text (second node)]
        (vector? (first node)) (vec (concat [:<>] node))
        :else [rn/text (str node)])
      {:key (str (random-uuid))})
