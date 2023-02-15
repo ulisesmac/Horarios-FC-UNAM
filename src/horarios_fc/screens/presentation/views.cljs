@@ -63,28 +63,41 @@
       [rn/text {:style {:color (colors/theme-color :basic-100)}}
        text]]]))
 
-(defn li [children]
-  [rn/text
-   [rn/view {:style {:height 7
-                     :width 7
-                     :border-radius 20
-                     :background-color (colors/theme-color :primary-500)}}
-    [rn/text " "]]
-   children "\n"])
-
 (defn em [children]
-  [rn/text {:style {:font-style "italic"}}
+  [rn/text {:style {:font-style :italic}}
    children])
 
+(defn li
+  ([idx [_fragment-kw child-text & children]]
+   (let [li-parent [rn/view {:style nil}
+                    [rn/text (str idx ". ")
+                     child-text]]]
+     (into li-parent children)))
+  ;;
+  ([children]
+   [rn/view
+    [rn/text
+     [rn/view {:style {:height           7
+                       :width            7
+                       :border-radius    20
+                       :background-color (colors/theme-color :primary-500)}}
+      ;; TODO: remove and check paddings
+      [rn/text " "]]
+     children]]))
+
 (defn ol [[_kw & children]]
-  [rn/text (interleave (map inc (range))
-                       (repeat ".")
-                       (map #(nth % 1) children)
-                       (repeat "\n\n"))])
+  [rn/view {:style {:padding-left   12
+                    :padding-top    4
+                    :padding-bottom 6}}
+   (map (fn [idx [_kw-li child]]
+          ^{:key (str idx child)}
+          [li idx child])
+        (rest (range))
+        children)])
 
 (defn hr []
   [rn/view {:style {:border-bottom-color (colors/theme-color :basic-1100)
-                    :border-bottom-width 1}}])
+                    :border-bottom-width 0.7}}])
 
 #_(defn table [[_kw [body]]]
   [rn/text body])
@@ -111,27 +124,29 @@
 (defn html->hiccup [node]
   (cond
     (vector? node)
-    (cond
-      (= (first node) :a) [a (rest node)]
-      (= (first node) :attr/target) node
-      (= (first node) :br) [rn/text "\n"]
-      (= (first node) :div) [div (second node)]
-      (= (first node) :em) [em (second node)]
-      (= (first node) :h2) [h2 (second node)]
-      (= (first node) :h3) [h3 (second node)]
-      (= (first node) :h4) [h4 (second node)]
-      (= (first node) :h5) [h5 (second node)]
-      (= (first node) :hr) [hr]
-      (= (first node) :li) [li (second node)]
-      (= (first node) :ol) [ol (second node)]
-      (= (first node) :p) [p (second node)]
-      (= (first node) :span) [span (second node)]
-      (= (first node) :strong) [strong (second node)]
-      #_(= (first node) :table) #_[table (second (second node))]
-      (= (first node) :text) [rn/text (second node)]
-      (= (first node) :ul) [rn/text (second node)]
-      (vector? (first node)) (vec (concat [:<>] node))
-      :else [rn/text (str node)])
+    (with-meta
+     (cond
+       (= (first node) :a) [a (rest node)]
+       (= (first node) :attr/target) node
+       (= (first node) :br) [rn/text "\n"]
+       (= (first node) :div) [div (second node)]
+       (= (first node) :em) [em (second node)]
+       (= (first node) :h2) [h2 (second node)]
+       (= (first node) :h3) [h3 (second node)]
+       (= (first node) :h4) [h4 (second node)]
+       (= (first node) :h5) [h5 (second node)]
+       (= (first node) :hr) [hr]
+       (= (first node) :li) [:li (second node)]
+       (= (first node) :ol) [ol (second node)]
+       (= (first node) :p) [p (second node)]
+       (= (first node) :span) [span (second node)]
+       (= (first node) :strong) [strong (second node)]
+       #_(= (first node) :table) #_[table (second (second node))]
+       (= (first node) :text) [rn/text (second node)]
+       (= (first node) :ul) [rn/text (second node)]
+       (vector? (first node)) (vec (concat [:<>] node))
+       :else [rn/text (str node)])
+     {:key (str (random-uuid))})
 
     (string? node) node
 
@@ -141,7 +156,8 @@
   (let [presentation (rf/subscribe [::subs/presentation])
         _ (def -p presentation)]
     (fn []
-      [rn/view [top-bar]
+      [rn/view
+       [top-bar]
        [rn/scroll-view {:style {:margin-horizontal 6}}
         (let [_ (def x
                   (walk/postwalk html->hiccup @presentation))]
