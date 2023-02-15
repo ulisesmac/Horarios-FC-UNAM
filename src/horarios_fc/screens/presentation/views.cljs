@@ -11,27 +11,31 @@
   [rn/text {:style {:font-size     21
                     :margin-top    5.75
                     :margin-bottom 5.75
-                    :font-weight   "600"}}
+                    :font-weight   "600"
+                    :color         (colors/theme-color :basic-800)}}
    text])
 
 (defn h3 [text]
   [rn/text {:style {:font-size     16
                     :margin-top    7
                     :margin-bottom 7
-                    :font-weight   "600"}}
+                    :font-weight   "600"
+                    :color         (colors/theme-color :basic-800)}}
    text])
 
 (defn h4 [text]
   [rn/text {:style {:font-size     15
                     :margin-top    9.31
                     :margin-bottom 9.31
-                    :font-weight   "600"}}
+                    :font-weight   "600"
+                    :color         (colors/theme-color :basic-800)}}
    text])
 
 (defn h5 [text]
   [rn/text {:style {:font-size     14
                     :margin-horizontal    11.67
-                    :font-weight   "600"}}
+                    :font-weight   "600"
+                    :color         (colors/theme-color :basic-800)}}
    text])
 
 (defn div [children]
@@ -39,14 +43,17 @@
 
 (defn p [children]
   [rn/text {:style {:margin-vertical 7
-                    :font-size 14
-                    :column-gap 7}}
+                    :font-size       14
+                    :line-height     22
+                    :column-gap      7
+                    :color           (colors/theme-color :basic-800)}}
    children])
 (defn span [children]
   children)
 
 (defn strong [children]
-  [rn/text {:style {:font-weight "600"}}
+  [rn/text {:style {:font-weight "600"
+                    :color       (colors/theme-color :primary-700)}}
    " "
    children
    " "])
@@ -70,7 +77,10 @@
 (defn li
   ([idx [_fragment-kw child-text & children]]
    (let [li-parent [rn/view {:style nil}
-                    [rn/text (str idx ". ")
+                    [rn/text {:style {:font-size 14
+                                      :line-height 20
+                                      :color     (colors/theme-color :basic-800)}}
+                     (str idx ". ")
                      child-text]]]
      (into li-parent children)))
   ;;
@@ -96,11 +106,42 @@
         children)])
 
 (defn hr []
-  [rn/view {:style {:border-bottom-color (colors/theme-color :basic-1100)
-                    :border-bottom-width 0.7}}])
+  [rn/view {:style {:flex             1
+                    :height           0.7
+                    :background-color (colors/theme-color :basic-700)}}])
 
-#_(defn table [[_kw [body]]]
-  [rn/text body])
+(defn table [body]
+  [rn/view {:style {:margin-vertical   8
+                    :margin-horizontal 4
+                    :border-width      1
+                    :border-color      (colors/theme-color :primary-800)}}
+   body])
+
+(defn tbody [body]
+  [rn/view
+   body])
+
+(defn tr [body]
+  [rn/view {:style {:flex-direction      :row
+                    :flex                1
+                    :align-items         :center
+                    :border-bottom-width 1
+                    :border-bottom-color (colors/theme-color :primary-800)}}
+   body])
+
+(defn td [body]
+  [rn/view {:style {:flex               1
+                    :justify-content    :center
+                    :align-items        :center
+                    :padding-horizontal 12
+                    :padding-vertical   4
+                    :border-left-width  0.5
+                    :border-right-width 0.5
+                    :border-left-color  (colors/theme-color :primary-800)
+                    :border-right-color (colors/theme-color :primary-800)}}
+   [rn/text {:style {:font-size 14
+                     :color     (colors/theme-color :basic-800)}}
+    body]])
 
 (defn top-bar []
   (let [subject (rf/subscribe [:subject-selected])]
@@ -141,7 +182,12 @@
        (= (first node) :p) [p (second node)]
        (= (first node) :span) [span (second node)]
        (= (first node) :strong) [strong (second node)]
-       #_(= (first node) :table) #_[table (second (second node))]
+
+       (= (first node) :table) [table (second node)]
+       (= (first node) :tbody) [tbody (second node)]
+       (= (first node) :tr) [tr (second node)]
+       (= (first node) :td) [td (second node)]
+
        (= (first node) :text) [rn/text (second node)]
        (= (first node) :ul) [rn/text (second node)]
        (vector? (first node)) (vec (concat [:<>] node))
@@ -154,11 +200,14 @@
 
 (defn screen* []
   (let [presentation (rf/subscribe [::subs/presentation])
-        _ (def -p presentation)]
+        _            (def -p presentation)]
     (fn []
-      [rn/view
+      [rn/view {:style {:flex             1
+                        :padding-bottom   24
+                        :background-color (colors/theme-color :basic-100)}
+                }
        [top-bar]
-       [rn/scroll-view {:style {:margin-horizontal 6}}
+       [rn/scroll-view {:style {:padding-horizontal 14}}
         (let [_ (def x
                   (walk/postwalk html->hiccup @presentation))]
           x)
