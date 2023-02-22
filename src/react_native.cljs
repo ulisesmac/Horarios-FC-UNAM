@@ -5,6 +5,7 @@
 
 (def view (r/adapt-react-class rn/View))
 (def scroll-view (r/adapt-react-class rn/ScrollView))
+(def flat-list (r/adapt-react-class rn/FlatList))
 
 (def text (r/adapt-react-class rn/Text))
 (def image (r/adapt-react-class rn/Image))

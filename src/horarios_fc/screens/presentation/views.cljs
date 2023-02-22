@@ -197,34 +197,34 @@
     (with-meta
      (cond
        (empty? node) nil
-       (= (first node) :a) [a (rest node)]
-       (= (first node) :attr/target) node
-       (= (first node) :br) [rn/text "\n"]
-       (= (first node) :div) [div (second node)]
-       (= (first node) :em) [em (second node)]
-       (= (first node) :h2) [h2 (second node)]
-       (= (first node) :h3) [h3 (second node)]
-       (= (first node) :h4) [h4 (second node)]
-       (= (first node) :h5) [h5 (second node)]
-       (= (first node) :hr) [hr]
-       (= (first node) :sup) [sup (second node)]
-       (= (first node) :code) [code (second node)]
+       (= (keyword (first node)) :a) [a (rest node)]
+       (= (keyword (first node)) :attr/target) node
+       (= (keyword (first node)) :br) [rn/text "\n"]
+       (= (keyword (first node)) :div) [div (second node)]
+       (= (keyword (first node)) :em) [em (second node)]
+       (= (keyword (first node)) :h2) [h2 (second node)]
+       (= (keyword (first node)) :h3) [h3 (second node)]
+       (= (keyword (first node)) :h4) [h4 (second node)]
+       (= (keyword (first node)) :h5) [h5 (second node)]
+       (= (keyword (first node)) :hr) [hr]
+       (= (keyword (first node)) :sup) [sup (second node)]
+       (= (keyword (first node)) :code) [code (second node)]
 
-       (= (first node) :ul) [ul (second node)]
-       (= (first node) :ol) [ol (second node)]
-       (= (first node) :li) [:li (second node)]
+       (= (keyword (first node)) :ul) [ul (second node)]
+       (= (keyword (first node)) :ol) [ol (second node)]
+       (= (keyword (first node)) :li) [:li (second node)]
 
-       (= (first node) :p) [p (second node)]
-       (= (first node) :span) [span (second node)]
-       (= (first node) :strong) [strong (second node)]
-       (= (first node) :img) [img]
+       (= (keyword (first node)) :p) [p (second node)]
+       (= (keyword (first node)) :span) [span (second node)]
+       (= (keyword (first node)) :strong) [strong (second node)]
+       (= (keyword (first node)) :img) [img]
 
-       (= (first node) :table) [table (second node)]
-       (= (first node) :tbody) [tbody (second node)]
-       (= (first node) :tr) [tr (second node)]
-       (= (first node) :td) [td (second node)]
+       (= (keyword (first node)) :table) [table (second node)]
+       (= (keyword (first node)) :tbody) [tbody (second node)]
+       (= (keyword (first node)) :tr) [tr (second node)]
+       (= (keyword (first node)) :td) [td (second node)]
 
-       (= (first node) :text) [rn/text (second node)]
+       (= (keyword (first node)) :text) [rn/text (second node)]
        (vector? (first node)) (vec (concat [:<>] node))
        :else [rn/text (str node)])
      {:key (str (random-uuid))})
@@ -232,6 +232,8 @@
     (string? node) node
 
     :else node))
+(defn render-item [hiccup-el]
+  (walk/postwalk html->hiccup hiccup-el))
 
 (defn screen* []
   (let [presentation (rf/subscribe [::subs/presentation])
@@ -242,10 +244,12 @@
                         :background-color (colors/theme-color :basic-100)}
                 }
        [top-bar]
-       [rn/scroll-view {:style {:padding-horizontal 14}}
-        (let [_ (def x
-                  (walk/postwalk html->hiccup @presentation))]
-          x)
+       [rn/flat-list {:style         {:padding-horizontal 14}
+                      :data          @presentation
+                      :render-item   #(r/as-element
+                                        [render-item (:item (js->clj % :keywordize-keys true))])
+                      :key-extractor (fn [item]
+                                       (str (random-uuid)))}
         ]])))
 
 (defn screen [] (r/as-element [:f> screen*]))
