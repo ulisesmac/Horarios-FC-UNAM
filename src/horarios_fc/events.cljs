@@ -13,7 +13,7 @@
 (rf/reg-event-fx
  ::load-app-state
  (fn [_ [_ state]]
-   {:db (assoc state :app-loading? true
+   {:db nil #_(assoc state :app-loading? true
                      :requesting-data? true
                      :splash-screen-mounted? true)
     :fx [[:dispatch [::p/get-majors {:semester       util/current-semester

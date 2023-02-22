@@ -157,6 +157,21 @@
                      :color     (colors/theme-color :basic-800)}}
     body]])
 
+(defn sup [text]
+  [rn/text
+   [rn/view {:style {:justify-content :flex-start}}
+    [rn/text {:style {:font-size 10}}
+     text]]])
+
+(defn code [children]
+  [rn/text {:style {:font-style :code}}
+   children])
+
+(defn img []
+  [rn/image {:style  {:resize-mode :contain
+                      :width       "100%"}
+             :source (js/require "../resources/icons/app/splash.png")}])
+
 (defn top-bar []
   (let [subject (rf/subscribe [:subject-selected])]
     [rn/view {:style {:position            :relative
@@ -181,6 +196,7 @@
     (vector? node)
     (with-meta
      (cond
+       (empty? node) nil
        (= (first node) :a) [a (rest node)]
        (= (first node) :attr/target) node
        (= (first node) :br) [rn/text "\n"]
@@ -191,6 +207,8 @@
        (= (first node) :h4) [h4 (second node)]
        (= (first node) :h5) [h5 (second node)]
        (= (first node) :hr) [hr]
+       (= (first node) :sup) [sup (second node)]
+       (= (first node) :code) [code (second node)]
 
        (= (first node) :ul) [ul (second node)]
        (= (first node) :ol) [ol (second node)]
@@ -199,6 +217,7 @@
        (= (first node) :p) [p (second node)]
        (= (first node) :span) [span (second node)]
        (= (first node) :strong) [strong (second node)]
+       (= (first node) :img) [img]
 
        (= (first node) :table) [table (second node)]
        (= (first node) :tbody) [tbody (second node)]
