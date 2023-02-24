@@ -173,7 +173,8 @@
              :source (js/require "../resources/icons/app/splash.png")}])
 
 (defn top-bar []
-  (let [subject (rf/subscribe [:subject-selected])]
+  (let [subject (rf/subscribe [:subject-selected])
+        group-id (rf/subscribe [:group-selected])]
     [rn/view {:style {:position            :relative
                       :height              58
                       :padding-vertical    6
@@ -189,7 +190,7 @@
        (str @subject ", ")]
       [rn/text {:style {:color       (colors/theme-color :primary-700 :primary-600)
                         :font-weight "600"}}
-       (str "Grupo")]]]))
+       (str "Grupo " @group-id)]]]))
 
 (defn html->hiccup [node]
   (cond

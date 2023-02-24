@@ -42,6 +42,12 @@
    (:subject schedule-shown-content)))
 
 (rf/reg-sub
+  :group-selected
+  :<- [:schedule-shown-content]
+  (fn [schedule-shown-content]
+    (:group-id schedule-shown-content)))
+
+(rf/reg-sub
  :requesting-data?
  (fn [db]
    (:requesting-data? db)))
