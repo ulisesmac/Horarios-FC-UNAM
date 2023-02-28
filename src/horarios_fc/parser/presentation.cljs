@@ -7,11 +7,25 @@
 
 (def test-url "/docencia/horarios/presentacion/342743")
 
+(def html-entities {"&acute;"  "´"
+                    "&bull;"   "•"
+                    "&hellip;" "…"
+                    "&middot;" "·"
+                    "&ndash;"  "—"
+                    "&ordm;"   "º"
+                    "&rarr;"   "→"
+                    ":@" "attributes"})
+
+(defn replace-entities [html]
+  (clojure.string/replace html
+                          #"&acute;|&bull;|&hellip;|&middot;|&ndash;|&ordm;|&rarr;|:@"
+                          html-entities))
+
 (defn parse-presentation [raw-response]
   (let [parsed-html  (-> (p/xml-parser {:preserveOrder true})
                          (.parse raw-response)
                          (js/JSON.stringify)
-                         (clojure.string/replace #":@" "attributes")
+                         (replace-entities)
                          (js/JSON.parse)
                          (js->clj :keywordize-keys true))
         content-path [0 :html 1 :body 1 :div 1 :div 2 :div 0 :div]
