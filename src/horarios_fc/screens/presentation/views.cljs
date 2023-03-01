@@ -32,10 +32,10 @@
    text])
 
 (defn h5 [text]
-  [rn/text {:style {:font-size     14
-                    :margin-horizontal    11.67
-                    :font-weight   "600"
-                    :color         (colors/theme-color :basic-800)}}
+  [rn/text {:style {:font-size         14
+                    :margin-horizontal 11.67
+                    :font-weight       "600"
+                    :color             (colors/theme-color :basic-800)}}
    text])
 
 (defn div [children]
@@ -67,19 +67,19 @@
      [rn/view {:style {:padding-vertical   6
                        :padding-horizontal 18
                        :background-color   (colors/theme-color :primary-600)
-                       :border-radius 6}}
+                       :border-radius      6}}
       [rn/text {:style {:color (colors/theme-color :basic-100)}}
        text]]]))
 
 (defn img [[_kw1 _nil _kw2 attributes :as p]]
-  (let [x (into {} (mapv vec (partition 2 attributes)))
-        _ (def -img p)
-        _ (def -att attributes)
-        _ (def -xx x)]
-    (prn (get x "src"))
-    [rn/image {:source (js/require (get x "src"))}]
-    #_[rn/text (get x "alt")]))
-
+  (let [{:keys [height width src]} (as-> attributes $
+                                     (partition 2 $)
+                                     (mapv vec $)
+                                     (into {} $)
+                                     (update-keys $ keyword))]
+    [rn/image {:style  {:height (int height)
+                        :width  (int width)}
+               :source {:uri src}}]))
 
 (defn em [children]
   [rn/text {:style {:font-style :italic}}
@@ -178,7 +178,7 @@
    children])
 
 (defn top-bar []
-  (let [subject (rf/subscribe [:subject-selected])
+  (let [subject  (rf/subscribe [:subject-selected])
         group-id (rf/subscribe [:group-selected])]
     [rn/view {:style {:position            :relative
                       :height              58
@@ -201,41 +201,41 @@
   (cond
     (vector? node)
     (with-meta
-      (cond
-        (empty? node) nil
-        (= (keyword (first node)) :a) [a (rest node)]
-        (= (keyword (first node)) :alt) node
+     (cond
+       (empty? node) nil
+       (= (keyword (first node)) :a) [a (rest node)]
+       (= (keyword (first node)) :alt) node
 
 
-        (= (keyword (first node)) :br) [rn/text "\n"]
-        (= (keyword (first node)) :div) [div (second node)]
-        (= (keyword (first node)) :em) [em (second node)]
-        (= (keyword (first node)) :h2) [h2 (second node)]
-        (= (keyword (first node)) :h3) [h3 (second node)]
-        (= (keyword (first node)) :h4) [h4 (second node)]
-        (= (keyword (first node)) :h5) [h5 (second node)]
-        (= (keyword (first node)) :hr) [hr]
-        (= (keyword (first node)) :sup) [sup (second node)]
-        (= (keyword (first node)) :code) [code (second node)]
+       (= (keyword (first node)) :br) [rn/text "\n"]
+       (= (keyword (first node)) :div) [div (second node)]
+       (= (keyword (first node)) :em) [em (second node)]
+       (= (keyword (first node)) :h2) [h2 (second node)]
+       (= (keyword (first node)) :h3) [h3 (second node)]
+       (= (keyword (first node)) :h4) [h4 (second node)]
+       (= (keyword (first node)) :h5) [h5 (second node)]
+       (= (keyword (first node)) :hr) [hr]
+       (= (keyword (first node)) :sup) [sup (second node)]
+       (= (keyword (first node)) :code) [code (second node)]
 
-        (= (keyword (first node)) :ul) [ul (second node)]
-        (= (keyword (first node)) :ol) [ol (second node)]
-        (= (keyword (first node)) :li) [li (second node)]
+       (= (keyword (first node)) :ul) [ul (second node)]
+       (= (keyword (first node)) :ol) [ol (second node)]
+       (= (keyword (first node)) :li) [li (second node)]
 
-        (= (keyword (first node)) :p) [p (second node)]
-        (= (keyword (first node)) :span) [span (second node)]
-        (= (keyword (first node)) :strong) [strong (second node)]
-        (= (keyword (first node)) :img) [img node]
+       (= (keyword (first node)) :p) [p (second node)]
+       (= (keyword (first node)) :span) [span (second node)]
+       (= (keyword (first node)) :strong) [strong (second node)]
+       (= (keyword (first node)) :img) [img node]
 
-        (= (keyword (first node)) :table) [table (second node)]
-        (= (keyword (first node)) :tbody) [tbody (second node)]
-        (= (keyword (first node)) :tr) [tr (second node)]
-        (= (keyword (first node)) :td) [td (second node)]
+       (= (keyword (first node)) :table) [table (second node)]
+       (= (keyword (first node)) :tbody) [tbody (second node)]
+       (= (keyword (first node)) :tr) [tr (second node)]
+       (= (keyword (first node)) :td) [td (second node)]
 
-        (= (keyword (first node)) :text) [rn/text (second node)]
-        (vector? (first node)) (vec (concat [:<>] node))
-        :else [rn/text (str node)])
-      {:key (str (random-uuid))})
+       (= (keyword (first node)) :text) [rn/text (second node)]
+       (vector? (first node)) (vec (concat [:<>] node))
+       :else [rn/text (str node)])
+     {:key (str (random-uuid))})
 
     (string? node) node
 
@@ -249,13 +249,13 @@
     (fn []
       [rn/view {:style {:flex             1
                         :padding-bottom   24
-                        :background-color (colors/theme-color :basic-100)}
+                        :background-color (colors/theme-color :basic-100 :basic-500)}
                 }
        [top-bar]
        [rn/flat-list {:style         {:padding-horizontal 14}
                       :data          @presentation
                       :render-item   #(r/as-element
-                                        [render-item (:item (js->clj % :keywordize-keys true))])
+                                       [render-item (:item (js->clj % :keywordize-keys true))])
                       :key-extractor (fn [item]
                                        (str (random-uuid)))}
         ]])))
