@@ -2,6 +2,7 @@
   (:require
    [react-native :as rn]
    [horarios-fc.screens.presentation.subs :as subs]
+   [react-native-clipboard.clipboard :as clipboard]
    [reagent.core :as r]
    [clojure.walk :as walk]
    [re-frame.core :as rf]
@@ -54,24 +55,20 @@
 
 (defn strong [children]
   [rn/text {:style {:font-weight "600"
-                    :color       (colors/theme-color :primary-700)}}
+                    :color       (colors/theme-color :secondary-700)}}
    " "
    children
    " "])
 
-(defn a [[text _kw v-attributes :as p]]
-  (let [{:attr/keys [href] :as x} (into {} (mapv vec (partition 2 v-attributes)))]
-    #_(prn x v-attributes)
-    (prn p)
-    [rn/touchable-highlight {:on-press (fn [] (prn href))}
-     [rn/view {:style {:padding-vertical   6
-                       :padding-horizontal 18
-                       :background-color   (colors/theme-color :primary-600)
-                       :border-radius      6}}
-      [rn/text {:style {:color (colors/theme-color :basic-100)}}
-       text]]]))
+(defn a [[text _kw v-attributes]]
+  (let [{:keys [href]} (update-keys (into {} (mapv vec (partition 2 v-attributes)))
+                                    keyword)]
+    [rn/touchable-opacity {:on-press #(clipboard/set-string href)}
+     [rn/text {:style {:text-decoration-line :underline
+                       :color (colors/theme-color :primary-600)}}
+      text " (copiar 📋)"]]))
 
-(defn img [[_kw1 _nil _kw2 attributes :as p]]
+(defn img [[_kw1 _nil _kw2 attributes]]
   (let [{:keys [height width src]} (as-> attributes $
                                      (partition 2 $)
                                      (mapv vec $)
@@ -204,7 +201,9 @@
      (cond
        (empty? node) nil
        (= (keyword (first node)) :a) [a (rest node)]
+
        (= (keyword (first node)) :alt) node
+       (= (keyword (first node)) :target) node
 
 
        (= (keyword (first node)) :br) [rn/text "\n"]
