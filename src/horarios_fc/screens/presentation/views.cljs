@@ -79,7 +79,8 @@
                :source {:uri src}}]))
 
 (defn em [children]
-  [rn/text {:style {:font-style :italic}}
+  [rn/text {:style {:font-style :italic
+                    :color      (colors/theme-color :basic-800)}}
    children])
 
 (defn li
