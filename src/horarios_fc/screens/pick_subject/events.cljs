@@ -15,10 +15,11 @@
 
 (rf/reg-event-fx
  ::request-presentation
- (fn [{db :db} [_ group-id presentation-url]]
+ (fn [{db :db} [_ group-id presentation-url group-roles]]
    {:db (-> db
             (update :schedule-shown-content assoc
-                    :group-id group-id)
+                    :group-id               group-id
+                    :group-roles            group-roles)
             (assoc :requesting-data? true))
     :fx [[:dispatch [::p/get-presentation {:presentation-url presentation-url
                                            :on-success-evt   [::navigate-to-presentation]}]]]}))
