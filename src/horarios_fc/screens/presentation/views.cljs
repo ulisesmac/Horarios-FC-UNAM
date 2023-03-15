@@ -176,28 +176,48 @@
   [rn/text {:style {:font-style :code}}
    children])
 
-(defn head [subject group-id]
-  [rn/view {:style {:flex-direction     :row
-                    :height             58
-                    :padding-vertical   8
-                    :padding-horizontal 14
-                    :padding-left       44
-                    :background-color   (colors/theme-color :primary-700 :primary-1100)
-                    :align-items        :center
-                    :justify-content    :space-between}}
-   [rn/text {:style {:color       (colors/theme-color :basic-100 :basic-200)
-                     :font-weight "700"}}
-    (str subject)]
-   [rn/text {:style {:color       (colors/theme-color :basic-100 :basic-200)
-                     :font-weight "700"}}
-    (str "Grupo " group-id)]])
+(defn head [subject group-id places students description]
+  (let [places-text (when places (str places " L"))
+        students-text (when students (str students " A"))]
+   [rn/view
+    [rn/view {:style {:flex-direction     :row
+                     :height             58
+                     :padding-vertical   8
+                     :padding-horizontal 14
+                     :padding-left       44
+                     :background-color   (colors/theme-color :primary-700 :primary-1100)
+                     :align-items        :center
+                     :justify-content    :space-between}}
+    [rn/text {:style {:color       (colors/theme-color :basic-100 :basic-200)
+                      :font-weight "700"}}
+     (str subject)]
+    [rn/text {:style {:color       (colors/theme-color :basic-100 :basic-200)
+                      :font-weight "700"}}
+     (str "Grupo " group-id)]
+    [rn/text {:style {:color       (colors/theme-color :basic-100 :basic-200)
+                      :font-weight "700"}}
+     (if (and places-text students-text)
+       (str places-text " / " students-text)
+       (or places-text students-text))]]
+    (when description
+      [rn/view {:style {:padding-vertical           8
+                        :padding-horizontal         14
+                        :border-bottom-right-radius 14
+                        :border-bottom-left-radius  14
+                        :background-color           (colors/theme-color :primary-300 :primary-1200)}}
+       [rn/text {:style {:color      (colors/theme-color :basic-1000 :primary-400)
+                         :font-style :italic}}
+        (str "📖 " (clojure.string/capitalize description))]])]))
 
 (defn group-details []
   (let [subject (rf/subscribe [:subject-selected])
         group-id (rf/subscribe [:group-selected-id])
+        places (rf/subscribe [:group-selected-places])
+        students (rf/subscribe [:group-selected-students])
+        description (rf/subscribe [:group-selected-description])
         roles (rf/subscribe [:group-selected-roles])]
     [rn/view
-     [head @subject @group-id]
+     [head @subject @group-id @places @students @description]
      [rn/view {:style {:padding-horizontal 14
                        :padding-bottom     8}}
       (map (fn [[role {:keys [person-name days hours classroom extra]}]]

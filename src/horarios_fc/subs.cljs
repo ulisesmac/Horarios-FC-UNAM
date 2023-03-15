@@ -48,6 +48,24 @@
     (:group-id schedule-shown-content)))
 
 (rf/reg-sub
+  :group-selected-places
+  :<- [:schedule-shown-content]
+  (fn [schedule-shown-content]
+    (:places schedule-shown-content)))
+
+(rf/reg-sub
+  :group-selected-students
+  :<- [:schedule-shown-content]
+  (fn [schedule-shown-content]
+    (:students schedule-shown-content)))
+
+(rf/reg-sub
+  :group-selected-description
+  :<- [:schedule-shown-content]
+  (fn [schedule-shown-content]
+    (:description schedule-shown-content)))
+
+(rf/reg-sub
   :group-selected-roles
   :<- [:schedule-shown-content]
   (fn [schedule-shown-content]

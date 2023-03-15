@@ -137,13 +137,13 @@
                                   :classroom classroom}])
           extra))])
 
-(defn presentation-button [group-data {:keys [group-id presentation-url]}]
+(defn presentation-button [group-data {:keys [group-id places students presentation-url description]}]
   (let [group-roles (dissoc group-data :presentation-url :places :group-id :description :students)]
    [rn/view {:style style/presentation}
     [rn/touchable-highlight
      {:style          style/presentation-button-border
       :active-opacity 0.6
-      :on-press       #(rf/dispatch [::events/request-presentation group-id presentation-url group-roles])}
+      :on-press       #(rf/dispatch [::events/request-presentation group-id places students presentation-url group-roles description])}
      [rn/view {:style (style/presentation-button)}
       [rn/text {:style (style/presentation-button-text)}
        "📃 Presentación"]]]]))
@@ -168,8 +168,11 @@
    ;;
    (when presentation-url
      [presentation-button group-data
-                          {:group-id group-id
-                           :presentation-url presentation-url}])])
+                          {:group-id         group-id
+                           :places           places
+                           :students         students
+                           :presentation-url presentation-url
+                           :description      description}])])
 
 (defn subject-title [{:keys [semester-num subject]}]
   [rn/view {:style (style/subject-container)}
@@ -202,7 +205,6 @@
              (map (fn [{:keys [group-id] :as group-data}]
                     ^{:key group-id} [group-details group-data])
                   @groups-list)]]])]])))
-
 
 (defn bottom-panel []
   (let [semesters (rf/subscribe [::subs/semesters-w-subjects-list])]
