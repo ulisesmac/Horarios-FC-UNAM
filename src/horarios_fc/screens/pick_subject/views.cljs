@@ -74,7 +74,7 @@
       [rn/text {:style (style/unassigned-person-name)}
        "Sin asignar, "])
     [rn/text {:style (style/person-role)}
-     (string/replace role #"I" "")]]])
+     (string/replace (name role) #"I" "")]]])
 
 (defn- schedule-info [{:keys [days hours]}]
   [rn/view {:style (style/schedule)}
@@ -148,7 +148,8 @@
       [rn/text {:style (style/presentation-button-text)}
        "📃 Presentación"]]]]))
 
-(defn group-details [{:keys [group-id places students presentation-url description] :as group-data}]
+(defn group-details
+  [{:keys [group-id places students presentation-url description] :as group-data}]
   [rn/view
    [group-header {:group-id    group-id
                   :places      places
@@ -201,10 +202,13 @@
                            :subject      @selected-subject}]
            ;; List of groups
            [rn/view {:style {:flex 1}}
-            [rn/scroll-view {:content-container-style style/groups-list}
-             (map (fn [{:keys [group-id] :as group-data}]
-                    ^{:key group-id} [group-details group-data])
-                  @groups-list)]]])]])))
+            [rn/flat-list
+             {:content-container-style style/groups-list
+              :data                    @groups-list
+              :render-item             #(r/as-element
+                                         [group-details
+                                          (:item (js->clj % :keywordize-keys true))])
+              :key-extractor           #(get (js->clj %) "group-id")}]]])]])))
 
 (defn bottom-panel []
   (let [semesters (rf/subscribe [::subs/semesters-w-subjects-list])]
