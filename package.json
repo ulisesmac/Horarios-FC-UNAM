@@ -31,7 +31,7 @@
     "jest": "^26.6.3",
     "metro-react-native-babel-preset": "0.72.3",
     "react-test-renderer": "18.1.0",
-    "shadow-cljs": "^2.20.19"
+    "shadow-cljs": "^2.22.9"
   },
   "jest": {
     "preset": "react-native"
