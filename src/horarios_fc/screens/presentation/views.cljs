@@ -1,13 +1,14 @@
 (ns horarios-fc.screens.presentation.views
   (:require
-   [react-native :as rn]
-   [horarios-fc.screens.presentation.subs :as subs]
-   [horarios-fc.screens.pick-subject.views :as views]
-   [react-native-clipboard.clipboard :as clipboard]
-   [reagent.core :as r]
+   [clojure.string :as string]
    [clojure.walk :as walk]
+   [horarios-fc.colors :as colors]
+   [horarios-fc.screens.pick-subject.views :as views]
+   [horarios-fc.screens.presentation.subs :as subs]
    [re-frame.core :as rf]
-   [horarios-fc.colors :as colors]))
+   [react-native :as rn]
+   [react-native-clipboard.clipboard :as clipboard]
+   [reagent.core :as r]))
 
 (defn h2 [text]
   [rn/text {:style {:font-size     21
@@ -50,6 +51,7 @@
                     :column-gap      7
                     :color           (colors/theme-color :basic-800)}}
    children])
+
 (defn span [children]
   [rn/text
    " " children " "])
@@ -66,7 +68,7 @@
                                     keyword)]
     [rn/touchable-opacity {:on-press #(clipboard/set-string href)}
      [rn/text {:style {:text-decoration-line :underline
-                       :color (colors/theme-color :primary-600)}}
+                       :color                (colors/theme-color :primary-600)}}
       text " (copiar 📋)"]]))
 
 (defn img [[_kw1 _nil _kw2 attributes]]
@@ -176,124 +178,117 @@
   [rn/text {:style {:font-style :code}}
    children])
 
-(defn head [subject group-id places students description]
+(defn head [{:keys [subject group-id places students description]}]
   (let [places-text (when places (str places " L"))
         students-text (when students (str students " A"))]
-   [rn/view
-    [rn/view {:style {:flex-direction     :row
-                     :height             58
-                     :padding-vertical   8
-                     :padding-horizontal 14
-                     :padding-left       44
-                     :background-color   (colors/theme-color :primary-700 :primary-1100)
-                     :align-items        :center
-                     :justify-content    :space-between}}
-    [rn/text {:style {:color       (colors/theme-color :basic-100 :basic-200)
-                      :font-weight "700"}}
-     (str subject)]
-    [rn/text {:style {:color       (colors/theme-color :basic-100 :basic-200)
-                      :font-weight "700"}}
-     (str "Grupo " group-id)]
-    [rn/text {:style {:color       (colors/theme-color :basic-100 :basic-200)
-                      :font-weight "700"}}
-     (if (and places-text students-text)
-       (str places-text " / " students-text)
-       (or places-text students-text))]]
-    (when description
-      [rn/view {:style {:padding-vertical           8
+    [rn/view
+     [rn/view {:style {:flex-direction     :row
+                       :height             58
+                       :padding-vertical   8
+                       :padding-horizontal 14
+                       :padding-left       44
+                       :background-color   (colors/theme-color :primary-700 :primary-1100)
+                       :align-items        :center
+                       :justify-content    :space-between}}
+      [rn/text {:style {:color       (colors/theme-color :basic-100 :basic-200)
+                        :font-weight "700"}}
+       (str subject)]
+      [rn/text {:style {:color       (colors/theme-color :basic-100 :basic-200)
+                        :font-weight "700"}}
+       (str "Grupo " group-id)]
+      [rn/text {:style {:color       (colors/theme-color :basic-100 :basic-200)
+                        :font-weight "700"}}
+       (if (and places-text students-text)
+         (str places-text " / " students-text)
+         (or places-text students-text))]]
+     (when description
+       [rn/view {:style {:padding-vertical           8
                         :padding-horizontal         14
                         :border-bottom-right-radius 14
                         :border-bottom-left-radius  14
                         :background-color           (colors/theme-color :primary-300 :primary-1200)}}
-       [rn/text {:style {:color      (colors/theme-color :basic-1000 :primary-400)
+        [rn/text {:style {:color      (colors/theme-color :basic-1000 :primary-400)
                          :font-style :italic}}
-        (str "📖 " (clojure.string/capitalize description))]])]))
+         (str "📖 " (string/capitalize description))]])]))
 
 (defn group-details []
   (let [subject (rf/subscribe [:subject-selected])
-        group-id (rf/subscribe [:group-selected-id])
-        places (rf/subscribe [:group-selected-places])
-        students (rf/subscribe [:group-selected-students])
-        description (rf/subscribe [:group-selected-description])
-        roles (rf/subscribe [:group-selected-roles])]
-    [rn/view
-     [head @subject @group-id @places @students @description]
-     [rn/view {:style {:padding-horizontal 14
-                       :padding-bottom     8}}
-      (map (fn [[role {:keys [person-name days hours classroom extra]}]]
-            ^{:key (str @group-id person-name role days hours)}
-            [views/group-info {:group-id    @group-id
-                               :role        role
-                               :person-name person-name
-                               :days        days
-                               :hours       hours
-                               :classroom   classroom
-                               :extra       extra}])
-          @roles)]]))
+        group-data (rf/subscribe [:group-details-selected])]
+    (fn []
+      (let [{:keys [group-id places students description group-roles]} @group-data]
+       [rn/view
+        [head {:subject     @subject
+               :group-id    group-id
+               :places      places
+               :students    students
+               :description description}]
+        [rn/view {:style {:padding-horizontal 14
+                          :padding-bottom     8}}
+         (map (fn [[role {:keys [person-name days hours classroom extra]}]]
+                ^{:key (str group-id person-name role days hours)}
+                [views/group-info {:group-id    group-id
+                                   :role        role
+                                   :person-name person-name
+                                   :days        days
+                                   :hours       hours
+                                   :classroom   classroom
+                                   :extra       extra}])
+              group-roles)]]))))
 
 (defn html->hiccup [node]
   (cond
     (vector? node)
-    (with-meta
-     (cond
-       (empty? node) nil
-       (= (keyword (first node)) :a) [a (rest node)]
+      (with-meta
+        (cond
+          (empty? node)                      nil
+          (vector? (first node))             (vec (concat [:<>] node))
+          (= (keyword (first node)) :a)      [a (rest node)]
+          (= (keyword (first node)) :alt)    node
+          (= (keyword (first node)) :target) node
+          (= (keyword (first node)) :br)     [rn/text "\n"]
+          (= (keyword (first node)) :div)    [div (second node)]
+          (= (keyword (first node)) :em)     [em (second node)]
+          (= (keyword (first node)) :h2)     [h2 (second node)]
+          (= (keyword (first node)) :h3)     [h3 (second node)]
+          (= (keyword (first node)) :h4)     [h4 (second node)]
+          (= (keyword (first node)) :h5)     [h5 (second node)]
+          (= (keyword (first node)) :hr)     [hr]
+          (= (keyword (first node)) :sup)    [sup (second node)]
+          (= (keyword (first node)) :code)   [code (second node)]
+          (= (keyword (first node)) :ul)     [ul (second node)]
+          (= (keyword (first node)) :ol)     [ol (second node)]
+          (= (keyword (first node)) :li)     [li (second node)]
+          (= (keyword (first node)) :p)      [p (second node)]
+          (= (keyword (first node)) :span)   [span (second node)]
+          (= (keyword (first node)) :strong) [strong (second node)]
+          (= (keyword (first node)) :img)    [img node]
+          (= (keyword (first node)) :table)  [table (second node)]
+          (= (keyword (first node)) :tbody)  [tbody (second node)]
+          (= (keyword (first node)) :tr)     [tr (second node)]
+          (= (keyword (first node)) :td)     [td (second node)]
+          (= (keyword (first node)) :text)   [rn/text (second node)]
+          ;;
+          :else                              [rn/text (str node)])
+        {:key (str (random-uuid))})
+    (string? node)
+      node
+      :else node))
 
-       (= (keyword (first node)) :alt) node
-       (= (keyword (first node)) :target) node
-
-
-       (= (keyword (first node)) :br) [rn/text "\n"]
-       (= (keyword (first node)) :div) [div (second node)]
-       (= (keyword (first node)) :em) [em (second node)]
-       (= (keyword (first node)) :h2) [h2 (second node)]
-       (= (keyword (first node)) :h3) [h3 (second node)]
-       (= (keyword (first node)) :h4) [h4 (second node)]
-       (= (keyword (first node)) :h5) [h5 (second node)]
-       (= (keyword (first node)) :hr) [hr]
-       (= (keyword (first node)) :sup) [sup (second node)]
-       (= (keyword (first node)) :code) [code (second node)]
-
-       (= (keyword (first node)) :ul) [ul (second node)]
-       (= (keyword (first node)) :ol) [ol (second node)]
-       (= (keyword (first node)) :li) [li (second node)]
-
-       (= (keyword (first node)) :p) [p (second node)]
-       (= (keyword (first node)) :span) [span (second node)]
-       (= (keyword (first node)) :strong) [strong (second node)]
-       (= (keyword (first node)) :img) [img node]
-
-       (= (keyword (first node)) :table) [table (second node)]
-       (= (keyword (first node)) :tbody) [tbody (second node)]
-       (= (keyword (first node)) :tr) [tr (second node)]
-       (= (keyword (first node)) :td) [td (second node)]
-
-       (= (keyword (first node)) :text) [rn/text (second node)]
-       (vector? (first node)) (vec (concat [:<>] node))
-       :else [rn/text (str node)])
-     {:key (str (random-uuid))})
-
-    (string? node) node
-
-    :else node))
 (defn render-item [hiccup-el]
   (walk/postwalk html->hiccup hiccup-el))
 
 (defn screen* []
-  (let [presentation (rf/subscribe [::subs/presentation])
-        _            (def -p presentation)]
+  (let [presentation (rf/subscribe [::subs/presentation])]
     (fn []
       [rn/view {:style {:flex             1
                         :padding-bottom   24
-                        :background-color (colors/theme-color :basic-100 :basic-500)}
-                }
+                        :background-color (colors/theme-color :basic-100 :basic-500)}}
        [group-details]
        [rn/flat-list {:style         {:padding-horizontal 14}
                       :data          @presentation
                       :render-item   #(r/as-element
-                                       [render-item (:item (js->clj % :keywordize-keys true))])
+                                        [render-item (:item (js->clj % :keywordize-keys true))])
                       :key-extractor (fn [item]
-                                       (str (random-uuid)))}
-        ]])))
+                                       (str (random-uuid)))}]])))
 
 (defn screen [] (r/as-element [:f> screen*]))

@@ -137,16 +137,15 @@
                                   :classroom classroom}])
           extra))])
 
-(defn presentation-button [group-data {:keys [group-id places students presentation-url description]}]
-  (let [group-roles (dissoc group-data :presentation-url :places :group-id :description :students)]
-   [rn/view {:style style/presentation}
-    [rn/touchable-highlight
-     {:style          style/presentation-button-border
-      :active-opacity 0.6
-      :on-press       #(rf/dispatch [::events/request-presentation group-id places students presentation-url group-roles description])}
-     [rn/view {:style (style/presentation-button)}
-      [rn/text {:style (style/presentation-button-text)}
-       "📃 Presentación"]]]]))
+(defn presentation-button [group-data]
+  [rn/view {:style style/presentation}
+   [rn/touchable-highlight
+    {:style          style/presentation-button-border
+     :active-opacity 0.6
+     :on-press       #(rf/dispatch [::events/request-presentation group-data])}
+    [rn/view {:style (style/presentation-button)}
+     [rn/text {:style (style/presentation-button-text)}
+      "📃 Presentación"]]]])
 
 (defn group-details
   [{:keys [group-id places students presentation-url description] :as group-data}]
@@ -168,12 +167,7 @@
          (dissoc group-data :presentation-url :places :group-id :description :students))]
    ;;
    (when presentation-url
-     [presentation-button group-data
-                          {:group-id         group-id
-                           :places           places
-                           :students         students
-                           :presentation-url presentation-url
-                           :description      description}])])
+     [presentation-button group-data])])
 
 (defn subject-title [{:keys [semester-num subject]}]
   [rn/view {:style (style/subject-container)}
