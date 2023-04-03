@@ -1,6 +1,6 @@
 (ns horarios-fc.parser.presentation
   (:require
-    [clojure.string]
+    [clojure.string :as string]
     [clojure.walk :as walk]
     [horarios-fc.networking :as n]
     [horarios-fc.parser.utils :refer [parse-xml] :as p]))
@@ -14,12 +14,17 @@
                     "&ndash;"  "—"
                     "&ordm;"   "º"
                     "&rarr;"   "→"
-                    ":@" "attributes"})
+                    ":@"       "attributes"})
+
+(def html-entities-regex
+  (->> html-entities
+       (keys)
+       (interpose "|")
+       (apply str)
+       (re-pattern)))
 
 (defn replace-entities [html]
-  (clojure.string/replace html
-                          #"&acute;|&bull;|&hellip;|&middot;|&ndash;|&ordm;|&rarr;|:@"
-                          html-entities))
+  (string/replace html html-entities-regex html-entities))
 
 (defn parse-presentation [raw-response]
   (let [parsed-html  (-> (p/xml-parser {:preserveOrder true})
@@ -35,14 +40,14 @@
          (walk/postwalk #(if (and (map? %) (:attr/text %))
                            {:text (:attr/text %)}
                            %))
-         (clojure.walk/postwalk #(if (map? %)
-                                   (into [] cat %)
-                                   %))
-         (clojure.walk/postwalk #(if (and
-                                       (vector? %)
-                                       (< (count %) 2))
-                                   (vec (mapcat identity %))
-                                   %)))))
+         (walk/postwalk #(if (map? %)
+                           (into [] cat %)
+                           %))
+         (walk/postwalk #(if (and
+                               (vector? %)
+                               (< (count %) 2))
+                           (vec (mapcat identity %))
+                           %)))))
 
 (defn create-url [url]
   (str n/domain url))

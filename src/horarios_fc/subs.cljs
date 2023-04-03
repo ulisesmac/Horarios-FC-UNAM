@@ -27,7 +27,7 @@
  :plan-selected
  :<- [:schedule-shown-content]
  (fn [schedule-shown-content]
-    (:plan schedule-shown-content)))
+   (:plan schedule-shown-content)))
 
 (rf/reg-sub
  :semester-num-selected
@@ -42,34 +42,10 @@
    (:subject schedule-shown-content)))
 
 (rf/reg-sub
-  :group-selected-id
-  :<- [:schedule-shown-content]
-  (fn [schedule-shown-content]
-    (:group-id schedule-shown-content)))
-
-(rf/reg-sub
-  :group-selected-places
-  :<- [:schedule-shown-content]
-  (fn [schedule-shown-content]
-    (:places schedule-shown-content)))
-
-(rf/reg-sub
-  :group-selected-students
-  :<- [:schedule-shown-content]
-  (fn [schedule-shown-content]
-    (:students schedule-shown-content)))
-
-(rf/reg-sub
-  :group-selected-description
-  :<- [:schedule-shown-content]
-  (fn [schedule-shown-content]
-    (:description schedule-shown-content)))
-
-(rf/reg-sub
-  :group-selected-roles
-  :<- [:schedule-shown-content]
-  (fn [schedule-shown-content]
-    (:group-roles schedule-shown-content)))
+ :group-details-selected
+ :<- [:schedule-shown-content]
+ (fn [schedule-shown-content]
+   (:group-details schedule-shown-content)))
 
 (rf/reg-sub
  :requesting-data?
