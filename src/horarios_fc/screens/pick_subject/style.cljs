@@ -84,7 +84,9 @@
 (defn group-header-description []
   {:padding-vertical   8
    :padding-horizontal 14
-   :background-color   (theme-color :primary-300 :primary-1200)})
+   :background-color   (theme-color :primary-300 :primary-1200)
+   :border-bottom-left-radius  0
+   :border-bottom-right-radius 0})
 
 (defn group-header-description-text []
   {:color      (theme-color :basic-1000 :primary-400)
