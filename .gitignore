@@ -62,6 +62,8 @@ buck-out/
 /ios/Pods/
 /vendor/bundle/
 
+# testing
+/coverage
 # Compiled ClojureScript
 /app/
 .shadow-cljs/
