@@ -8,7 +8,9 @@
    [react-native :as rn]
    [react-native-async-storage.async-storage]
    [reagent.core :as r]
-   [shadow.react-native :refer [render-root]]))
+   [shadow.react-native :refer [render-root]]
+   ["react-native-paper" :refer [PaperProvider]]))
+
 
 (defn root []
   (let [loading?        (rf/subscribe [:app-loading?])
@@ -22,7 +24,8 @@
 
 (defn ^:dev/after-load start []
   (rf/clear-subscription-cache!)
-  (render-root "HorariosFCUNAM" (r/as-element [root])))
+  (render-root "HorariosFCUNAM"
+               (r/as-element [:> PaperProvider [root]])))
 
 (defn init []
   (rn/ignore-logs ["Got a component with the name 'cmp'"
