@@ -9,6 +9,7 @@
    [react-native-async-storage.async-storage]
    [reagent.core :as r]
    [shadow.react-native :refer [render-root]]
+   [horarios-fc.testing-cloud-firestore]
    ["react-native-paper" :refer [PaperProvider]]))
 
 
