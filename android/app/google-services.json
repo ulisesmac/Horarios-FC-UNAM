@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "220290153825",
+    "project_id": "fcapp-cd4e5",
+    "storage_bucket": "fcapp-cd4e5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:220290153825:android:421eed4779b90e09545920",
+        "android_client_info": {
+          "package_name": "com.flyhighware.cienciasnet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "220290153825-jp0a2rm27i2goncm45in2lj7hp262uo3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAG1rznXDi5MWlz5qYdlmNK5zXFJYVECRE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "220290153825-jp0a2rm27i2goncm45in2lj7hp262uo3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
